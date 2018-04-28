@@ -19,7 +19,7 @@ import hankutanku.vision.opencv.OpenCVCam;
 import hankutanku.vision.opencv.OpenCVJNIHooks;
 import hankutanku.vision.opencv.VisionOpMode;
 
-@Autonomous(name="Jewel Detector", group= OpModeDisplayGroups.INSTANCE.getVISION_TESTING())
+@Autonomous(name="Jewel Detector", group= OpModeDisplayGroups.VISION_TESTING)
 public class JewelDetector extends EnhancedOpMode implements VisionOpMode
 {
     @Override

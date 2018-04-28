@@ -23,7 +23,7 @@ import hankutanku.vision.opencv.VisionOpMode;
  * Uses whether or not the yellow stripe on the glyph holder servo is obscured to determine whether
  * we've got two glyphs.
  */
-@Autonomous(name="Harvester Glyph Checker", group= OpModeDisplayGroups.INSTANCE.getVISION_TESTING())
+@Autonomous(name="Harvester Glyph Checker", group= OpModeDisplayGroups.VISION_TESTING)
 public class HarvesterGlyphChecker extends EnhancedOpMode implements VisionOpMode
 {
     @Override

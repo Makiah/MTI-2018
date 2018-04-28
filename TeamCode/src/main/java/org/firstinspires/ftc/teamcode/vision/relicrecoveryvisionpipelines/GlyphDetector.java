@@ -14,7 +14,7 @@ import hankutanku.EnhancedOpMode;
 import hankutanku.vision.opencv.OpenCVCam;
 import hankutanku.vision.opencv.VisionOpMode;
 
-@Autonomous(name="Glyph Detector", group= OpModeDisplayGroups.INSTANCE.getVISION_TESTING())
+@Autonomous(name="Glyph Detector", group= OpModeDisplayGroups.VISION_TESTING)
 public class GlyphDetector extends EnhancedOpMode implements VisionOpMode
 {
     @Override

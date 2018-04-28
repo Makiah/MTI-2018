@@ -30,7 +30,7 @@ import hankutanku.vision.opencv.VisionOpMode;
  * Tracks and guesses the approximate distances from this phone to each individual cryptobox
  * column through a bit of math.
  */
-@Autonomous(name="Cryptobox Viewer", group= OpModeDisplayGroups.INSTANCE.getVISION_TESTING())
+@Autonomous(name="Cryptobox Viewer", group= OpModeDisplayGroups.VISION_TESTING)
 public class CryptoboxTracker extends EnhancedOpMode implements VisionOpMode
 {
     @Override

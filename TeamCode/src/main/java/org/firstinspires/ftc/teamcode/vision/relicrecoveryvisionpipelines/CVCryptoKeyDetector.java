@@ -28,7 +28,7 @@ import hankutanku.files.FileManager;
 import hankutanku.vision.opencv.OpenCVCam;
 import hankutanku.vision.opencv.VisionOpMode;
 
-@Autonomous(name="CV CryptoKey Detector", group= OpModeDisplayGroups.INSTANCE.getVISION_TESTING())
+@Autonomous(name="CV CryptoKey Detector", group= OpModeDisplayGroups.VISION_TESTING)
 public class CVCryptoKeyDetector extends EnhancedOpMode implements VisionOpMode
 {
     protected double minDist = 0, maxDist = 4.3; // default settings
