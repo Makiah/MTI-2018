@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opmodes.experimentation.unittesting;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import hankutanku.EnhancedOpMode;
-import hankutanku.math.Vector2D;
 import hankutanku.phonesensors.AndroidGyro;
 
 import dude.makiah.androidlib.logging.ProcessConsole;

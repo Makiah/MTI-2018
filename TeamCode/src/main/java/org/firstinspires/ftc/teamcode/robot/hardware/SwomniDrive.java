@@ -20,8 +20,8 @@ import hankutanku.math.PIDController;
 import hankutanku.math.ParametrizedVector;
 import hankutanku.math.SingleParameterRunnable;
 
+import hankutanku.math.Vector;
 import hankutanku.phonesensors.Gyro;
-import hankutanku.math.Vector2D;
 
 /**
  * The SwomniDrive contains 4 SwomniModule instances to which a number of vectors are specified
@@ -36,7 +36,7 @@ public class SwomniDrive extends ScheduledTask
     private static TimeMeasure controlUpdateLatency = new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 100);
 
     // Total vector displacement from desired movement combinations, may be off from current but allows driving inaccuracies to be corrected in later drives.
-    private Vector2D cumulativeRobotFieldPosition = Vector2D.ZERO;
+    private Vector cumulativeRobotFieldPosition = Vector.ZERO;
 
     // Robot reference (for gyro and such).
     private final Gyro gyro;
@@ -135,7 +135,7 @@ public class SwomniDrive extends ScheduledTask
     // endregion
 
     // region Joystick Drive Methods
-    private Vector2D desiredMovement = Vector2D.ZERO;
+    private Vector desiredMovement = Vector.ZERO;
     private double desiredHeading = 0;
 
     public enum JoystickControlMethod { FIELD_CENTRIC, ROBOT_CENTRIC}
@@ -195,28 +195,28 @@ public class SwomniDrive extends ScheduledTask
             new Function() {
                 @Override
                 public double value(double input) {
-                    return Vector2D.clampAngle(WHEEL_ORIENTATIONS[0] + input * 20 - 5);
+                    return Vector.clampAngle(WHEEL_ORIENTATIONS[0] + input * 20 - 5);
                 }
             },
 
             new Function() {
                 @Override
                 public double value(double input) {
-                    return Vector2D.clampAngle(WHEEL_ORIENTATIONS[1] - input * 20 + 5);
+                    return Vector.clampAngle(WHEEL_ORIENTATIONS[1] - input * 20 + 5);
                 }
             },
 
             new Function() {
                 @Override
                 public double value(double input) {
-                    return Vector2D.clampAngle(WHEEL_ORIENTATIONS[2] + input * 20 - 5);
+                    return Vector.clampAngle(WHEEL_ORIENTATIONS[2] + input * 20 - 5);
                 }
             },
 
             new Function() {
                 @Override
                 public double value(double input) {
-                    return Vector2D.clampAngle(WHEEL_ORIENTATIONS[3] - input * 20 + 5);
+                    return Vector.clampAngle(WHEEL_ORIENTATIONS[3] - input * 20 + 5);
                 }
             }
     };
@@ -256,8 +256,8 @@ public class SwomniDrive extends ScheduledTask
 
                 for (int i = 0; i < swomniModules.length; i++)
                     swomniModules[i].setVectorTarget(
-                            Vector2D.polar(0.25 * rotationSpeed * speedControl.turnSpeed, WHEEL_ORIENTATIONS[i])
-                                    .add(Vector2D.polar(driveSpeed * speedControl.driveSpeed, 0)));
+                            Vector.polar(0.25 * rotationSpeed * speedControl.turnSpeed, WHEEL_ORIENTATIONS[i])
+                                    .add(Vector.polar(driveSpeed * speedControl.driveSpeed, 0)));
             }
 
             updateCanDrive();
@@ -266,7 +266,7 @@ public class SwomniDrive extends ScheduledTask
         }
 
         // Determined based on Field Centric/Robot Centric control mode.
-        Vector2D driveVector = Vector2D.ZERO;
+        Vector driveVector = Vector.ZERO;
         double rotationSpeed = 0;
 
         // Field centric control
@@ -274,8 +274,8 @@ public class SwomniDrive extends ScheduledTask
         {
             if (opModeSituation == EnhancedOpMode.AutoOrTeleop.TELEOP)
             {
-                Vector2D joystickDesiredRotation = HTGamepad.CONTROLLER1.rightJoystick();
-                Vector2D joystickDesiredMovement = HTGamepad.CONTROLLER1.leftJoystick();
+                Vector joystickDesiredRotation = HTGamepad.CONTROLLER1.rightJoystick();
+                Vector joystickDesiredMovement = HTGamepad.CONTROLLER1.leftJoystick();
 
                 // Use the left joystick for rotation unless nothing is supplied, in which case check the DPAD.
                 if (joystickDesiredRotation.magnitude > .0005)
@@ -284,7 +284,7 @@ public class SwomniDrive extends ScheduledTask
                 if (joystickDesiredMovement.magnitude > .0005)
                     setDesiredMovement(joystickDesiredMovement);
                 else
-                    setDesiredMovement(Vector2D.ZERO);
+                    setDesiredMovement(Vector.ZERO);
 
                 // Upon tapping white, calibrate the gyro
                 if (HTGamepad.CONTROLLER1.gamepad.y) {
@@ -298,7 +298,7 @@ public class SwomniDrive extends ScheduledTask
                 // Fine tuned adjustments.
                 if (HTGamepad.CONTROLLER1.gamepad.left_trigger > 0.1 || HTGamepad.CONTROLLER1.gamepad.right_trigger > 0.1) {
                     this.desiredHeading += 5 * (HTGamepad.CONTROLLER1.gamepad.left_trigger - HTGamepad.CONTROLLER1.gamepad.right_trigger);
-                    this.desiredHeading = Vector2D.clampAngle(this.desiredHeading);
+                    this.desiredHeading = Vector.clampAngle(this.desiredHeading);
                 }
             }
 
@@ -306,11 +306,11 @@ public class SwomniDrive extends ScheduledTask
             double gyroHeading = gyro.getHeading();
 
             // Find the least heading between the gyro and the current heading.
-            double angleOff = (Vector2D.clampAngle(desiredHeading - gyroHeading) + 180) % 360 - 180;
+            double angleOff = (Vector.clampAngle(desiredHeading - gyroHeading) + 180) % 360 - 180;
             angleOff = angleOff < -180 ? angleOff + 360 : angleOff;
 
             // Figure out the actual translation vector for swerve wheels based on gyro value.
-            Vector2D fieldCentricTranslation = vectorControlBasedOnHeading ? desiredMovement.rotateBy(-gyroHeading) : desiredMovement;
+            Vector fieldCentricTranslation = vectorControlBasedOnHeading ? desiredMovement.rotateBy(-gyroHeading) : desiredMovement;
 
             // Don't bother trying to be more accurate than 8 degrees while turning.
             rotationSpeed = FIELD_CENTRIC_TURN_CONTROLLER.value(-angleOff);
@@ -328,8 +328,8 @@ public class SwomniDrive extends ScheduledTask
                         "Current Heading: " + gyroHeading,
                         "Desired Angle: " + desiredHeading,
                         "Rotation Speed: " + rotationSpeed,
-                        "Translation Vector: " + desiredMovement.toString(Vector2D.VectorCoordinates.POLAR),
-                        "Current displacement: " + cumulativeRobotFieldPosition.toString(Vector2D.VectorCoordinates.POLAR));
+                        "Translation Vector: " + desiredMovement.toString(Vector.VectorInitializationState.POLAR),
+                        "Current displacement: " + cumulativeRobotFieldPosition.toString(Vector.VectorInitializationState.POLAR));
         }
 
         // Robot centric control.
@@ -340,7 +340,7 @@ public class SwomniDrive extends ScheduledTask
             {
                 desiredMovement = HTGamepad.CONTROLLER1.leftJoystick();
                 if (desiredMovement.magnitude < .0005)
-                    desiredMovement = Vector2D.ZERO;
+                    desiredMovement = Vector.ZERO;
 
                 rotationSpeed = -HTGamepad.CONTROLLER1.rightJoystick().y;
             }
@@ -353,9 +353,9 @@ public class SwomniDrive extends ScheduledTask
                 swerveConsole.write(
                         "Desired Angle: " + desiredHeading,
                         "Rotation Speed: " + rotationSpeed,
-                        "Translation Vector: " + desiredMovement.toString(Vector2D.VectorCoordinates.POLAR),
+                        "Translation Vector: " + desiredMovement.toString(Vector.VectorInitializationState.POLAR),
                         FIELD_CENTRIC_TURN_CONTROLLER instanceof PIDController ? "PID: " + ((PIDController)FIELD_CENTRIC_TURN_CONTROLLER).summary() : "",
-                        "Current displacement: " + cumulativeRobotFieldPosition.toString(Vector2D.VectorCoordinates.POLAR),
+                        "Current displacement: " + cumulativeRobotFieldPosition.toString(Vector.VectorInitializationState.POLAR),
                         "CVT: " + cvtRn);
         }
 
@@ -364,7 +364,7 @@ public class SwomniDrive extends ScheduledTask
         {
             for (int i = 0; i < swomniModules.length; i++)
                 swomniModules[i].setVectorTarget(
-                        Vector2D.polar(rotationSpeed * speedControl.turnSpeed, WHEEL_ORIENTATIONS[i])
+                        Vector.polar(rotationSpeed * speedControl.turnSpeed, WHEEL_ORIENTATIONS[i])
                                 .add(driveVector));
         }
         else if (swomniControlMode == SwomniControlMode.HOLONOMIC)
@@ -376,14 +376,14 @@ public class SwomniDrive extends ScheduledTask
                 if (driveVector.magnitude > .1)
                     cvtFactor = Math.abs(driveVector.x / driveVector.magnitude);
 
-                double desiredHeading = Vector2D.clampAngle(CVTDriveHeadings[i].value(Range.clip(cvtFactor, 0, 1)));
+                double desiredHeading = Vector.clampAngle(CVTDriveHeadings[i].value(Range.clip(cvtFactor, 0, 1)));
 
                 // Decide how to do a dot product with the drive vector.
-                double angleOff = (Vector2D.clampAngle(desiredHeading - driveVector.angle) + 180) % 360 - 180;
+                double angleOff = (Vector.clampAngle(desiredHeading - driveVector.angle) + 180) % 360 - 180;
                 angleOff = angleOff < -180 ? angleOff + 360 : angleOff;
 
                 swomniModules[i].setVectorTarget(
-                        Vector2D.polar(
+                        Vector.polar(
                                 rotationSpeed * speedControl.turnSpeed + 2 * driveVector.magnitude * Math.cos(Math.toRadians(angleOff)),
                                 desiredHeading));
 
@@ -411,7 +411,7 @@ public class SwomniDrive extends ScheduledTask
      * @param newlyDesiredMovement the new desired movement vector.
      *
      */
-    public void setDesiredMovement(@NonNull Vector2D newlyDesiredMovement)
+    public void setDesiredMovement(@NonNull Vector newlyDesiredMovement)
     {
         this.desiredMovement = newlyDesiredMovement;
     }
@@ -488,7 +488,7 @@ public class SwomniDrive extends ScheduledTask
         stop();
         distanceConsole.destroy();
     }
-    public void driveDistance(Vector2D direction, double distance, Flow flow) throws InterruptedException
+    public void driveDistance(Vector direction, double distance, Flow flow) throws InterruptedException
     {
         driveDistance(ParametrizedVector.from(direction), distance, null, flow);
     }
@@ -528,7 +528,7 @@ public class SwomniDrive extends ScheduledTask
         stop();
         distanceConsole.destroy();
     }
-    public void driveTime(Vector2D direction, long msDrive, Flow flow) throws InterruptedException
+    public void driveTime(Vector direction, long msDrive, Flow flow) throws InterruptedException
     {
         driveTime(ParametrizedVector.from(direction), msDrive, null, flow);
     }
@@ -551,14 +551,14 @@ public class SwomniDrive extends ScheduledTask
         final double lookaheadFactor = lookahead.durationIn(TimeMeasure.Units.MILLISECONDS) / totalTime.durationIn(TimeMeasure.Units.MILLISECONDS);
 
         // The end point of the movement.
-        final Vector2D movementEndpoint = movement.getVector(1);
+        final Vector movementEndpoint = movement.getVector(1);
 
         ProcessConsole purePursuit = LoggingBase.instance.newProcessConsole("Pure Pursuit");
 
         while (true)
         {
             // Current displacement vector.
-            Vector2D currentPositionOnField = Vector2D.average(
+            Vector currentPositionOnField = Vector.average(
                     swomniModules[0].getDisplacementVector(),
                     swomniModules[1].getDisplacementVector(),
                     swomniModules[2].getDisplacementVector(),
@@ -574,14 +574,14 @@ public class SwomniDrive extends ScheduledTask
             double movementParameter = Range.clip(driveCompletion + lookaheadFactor, 0, 1);
 
             // How to move based on the lookahead.
-            Vector2D desiredPositionOnField = movement.getVector(movementParameter).add(cumulativeRobotFieldPosition);
+            Vector desiredPositionOnField = movement.getVector(movementParameter).add(cumulativeRobotFieldPosition);
 
             // Movement vector taken by dividing by some constant which represents a conversion from distance to power.
-            Vector2D resultingTranslationVector = desiredPositionOnField.subtract(currentPositionOnField).divide(50);
+            Vector resultingTranslationVector = desiredPositionOnField.subtract(currentPositionOnField).divide(50);
 
             // Clip to max of 1 speed.
             if (resultingTranslationVector.magnitude > 1)
-                resultingTranslationVector = Vector2D.polar(1, resultingTranslationVector.angle);
+                resultingTranslationVector = Vector.polar(1, resultingTranslationVector.angle);
 
             // Apply and drive.
             setDesiredMovement(resultingTranslationVector);
@@ -597,10 +597,10 @@ public class SwomniDrive extends ScheduledTask
                 break;
 
             purePursuit.write(
-                    "Current: " + currentPositionOnField.toString(Vector2D.VectorCoordinates.RECTANGULAR),
-                    "Desired: " + desiredPositionOnField.toString(Vector2D.VectorCoordinates.RECTANGULAR),
+                    "Current: " + currentPositionOnField.toString(Vector.VectorInitializationState.RECTANGULAR),
+                    "Desired: " + desiredPositionOnField.toString(Vector.VectorInitializationState.RECTANGULAR),
                     "Param: " + movementParameter,
-                    "Translation: " + resultingTranslationVector.toString(Vector2D.VectorCoordinates.POLAR));
+                    "Translation: " + resultingTranslationVector.toString(Vector.VectorInitializationState.POLAR));
 
             flow.yield();
         }
@@ -656,7 +656,7 @@ public class SwomniDrive extends ScheduledTask
     /**
      * Orients all SwerveModules to a given vector with some degree of certainty (for auto)
      */
-    public void orientSwerveModules(Vector2D orientationVector, double precisionRequired, TimeMeasure timeMax, Flow flow) throws InterruptedException
+    public void orientSwerveModules(Vector orientationVector, double precisionRequired, TimeMeasure timeMax, Flow flow) throws InterruptedException
     {
         for (int i = 0; i < swomniModules.length; i++)
             swomniModules[i].setVectorTarget(orientationVector);
@@ -670,7 +670,7 @@ public class SwomniDrive extends ScheduledTask
     public void orientSwerveModulesForRotation(double precisionRequired, TimeMeasure timeMax, Flow flow) throws InterruptedException
     {
         for (int i = 0; i < swomniModules.length; i++)
-            swomniModules[i].setVectorTarget(Vector2D.polar(1, WHEEL_ORIENTATIONS[i]));
+            swomniModules[i].setVectorTarget(Vector.polar(1, WHEEL_ORIENTATIONS[i]));
 
         orientModules(precisionRequired, timeMax, flow);
     }
@@ -771,7 +771,7 @@ public class SwomniDrive extends ScheduledTask
         for (SwomniModule wheel : swomniModules)
             wheel.stopWheel();
 
-        setDesiredMovement(Vector2D.ZERO);
+        setDesiredMovement(Vector.ZERO);
 
         if (FIELD_CENTRIC_TURN_CONTROLLER instanceof PIDController)
             ((PIDController) FIELD_CENTRIC_TURN_CONTROLLER).resetController();

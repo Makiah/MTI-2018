@@ -5,31 +5,31 @@ package hankutanku.math;
  */
 public class ParametrizedVector
 {
-    public static ParametrizedVector from(final Vector2D base)
+    public static ParametrizedVector from(final Vector base)
     {
         return ParametrizedVector.rectangular(
-                new Function()
+                new Function<Double>()
                 {
-                    public double value(double input)
+                    public Double value(double input)
                     {
                         return base.x;
                     }
                 },
-                new Function()
+                new Function<Double>()
                 {
-                    public double value(double input)
+                    public Double value(double input)
                     {
                         return base.y;
                     }
                 });
     }
 
-    public static ParametrizedVector polar(Function mag, Function theta)
+    public static ParametrizedVector polar(Function<Double> mag, Function<Double> theta)
     {
         return new ParametrizedVector(VariableVectorType.POLAR, mag, theta);
     }
 
-    public static ParametrizedVector rectangular(Function x, Function y)
+    public static ParametrizedVector rectangular(Function<Double> x, Function<Double> y)
     {
         return new ParametrizedVector(VariableVectorType.RECTANGULAR, x, y);
     }
@@ -39,9 +39,9 @@ public class ParametrizedVector
     private final VariableVectorType type;
 
     // The components of this function.
-    private final Function a, b;
+    private final Function<Double> a, b;
 
-    private ParametrizedVector(VariableVectorType type, Function a, Function b)
+    private ParametrizedVector(VariableVectorType type, Function<Double> a, Function<Double> b)
     {
         this.type = type;
 
@@ -49,10 +49,10 @@ public class ParametrizedVector
         this.b = b;
     }
 
-    public Vector2D getVector(double param)
+    public Vector getVector(double param)
     {
         return type == VariableVectorType.POLAR ?
-                Vector2D.polar(a.value(param), b.value(param)) :
-                Vector2D.rectangular(a.value(param), b.value(param));
+                Vector.polar(a.value(param), b.value(param)) :
+                Vector.rectangular(a.value(param), b.value(param));
     }
 }

@@ -1,6 +1,10 @@
 package hankutanku.math;
 
-public interface Function
+/**
+ * Can be a function of type Angle, type Double, etc.
+ * @param <T>
+ */
+public interface Function<T>
 {
-    double value(double input);
+    T value(double input);
 }

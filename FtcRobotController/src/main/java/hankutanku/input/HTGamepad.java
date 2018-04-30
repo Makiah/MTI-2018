@@ -1,7 +1,8 @@
 package hankutanku.input;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
-import hankutanku.math.Vector2D;
+
+import hankutanku.math.Vector;
 
 /**
  * A gamepad class which keeps track of intelligent robot control.
@@ -48,18 +49,18 @@ public class HTGamepad
         right_bumper.state(gamepad.right_bumper);
     }
 
-    public Vector2D rightJoystick()
+    public Vector rightJoystick()
     {
-        return Vector2D.rectangular(gamepad.right_stick_x, -gamepad.right_stick_y).rotateBy(-90);
+        return Vector.rectangular(gamepad.right_stick_x, -gamepad.right_stick_y).rotateBy(-90);
     }
 
-    public Vector2D leftJoystick()
+    public Vector leftJoystick()
     {
-        return Vector2D.rectangular(gamepad.left_stick_x, -gamepad.left_stick_y).rotateBy(-90);
+        return Vector.rectangular(gamepad.left_stick_x, -gamepad.left_stick_y).rotateBy(-90);
     }
 
-    public Vector2D dpad()
+    public Vector dpad()
     {
-        return Vector2D.rectangular((gamepad.dpad_left ? 1 : 0) + (gamepad.dpad_right ? -1 : 0), (gamepad.dpad_up ? 1 : 0) + (gamepad.dpad_down ? -1 : 0)).unit();
+        return Vector.rectangular((gamepad.dpad_left ? 1 : 0) + (gamepad.dpad_right ? -1 : 0), (gamepad.dpad_up ? 1 : 0) + (gamepad.dpad_down ? -1 : 0)).unit();
     }
 }

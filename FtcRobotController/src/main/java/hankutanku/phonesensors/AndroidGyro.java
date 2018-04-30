@@ -8,7 +8,7 @@ import android.hardware.SensorManager;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
-import hankutanku.math.Vector2D;
+import hankutanku.math.Vector;
 
 public class AndroidGyro implements Gyro
 {
@@ -104,7 +104,7 @@ public class AndroidGyro implements Gyro
 
     private double currentHeadingRaw()
     {
-        double angle = Vector2D.clampAngle(Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)));
+        double angle = Vector.clampAngle(Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)));
 
         if (x < 0)
             angle = 360 - angle;
@@ -154,7 +154,7 @@ public class AndroidGyro implements Gyro
     public double getHeading()
     {
         // The phone is currently angled, so this is a bit of trig.
-//        return Vector2D.clampAngle(currentHeadingRaw()
+//        return Vector.clampAngle(currentHeadingRaw()
 //                - driftRate * ((System.currentTimeMillis() - startCalibrateTime) / 1000.0)
 //                - offset);
         return currentHeadingRaw();

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.hardware.SwomniDrive;
 import dude.makiah.androidlib.logging.ProcessConsole;
 import dude.makiah.androidlib.threading.ScheduledTaskPackage;
 import hankutanku.EnhancedOpMode;
-import hankutanku.math.Vector2D;
+import hankutanku.math.Vector;
 
 @TeleOp(name="Test Displacement Odometry", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
 public class TestDisplacementOdometry extends EnhancedOpMode
@@ -28,7 +28,7 @@ public class TestDisplacementOdometry extends EnhancedOpMode
         while (true)
         {
             totalDisplacement.write(
-                    "Total: " + Vector2D.average(
+                    "Total: " + Vector.average(
                                 robot.swomniDrive.swomniModules[0].getDisplacementVector(),
                                 robot.swomniDrive.swomniModules[1].getDisplacementVector(),
                                 robot.swomniDrive.swomniModules[2].getDisplacementVector(),

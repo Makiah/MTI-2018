@@ -12,7 +12,7 @@ import dude.makiah.androidlib.threading.TimeMeasure;
 import hankutanku.math.LimitedUpdateRateFunction;
 import hankutanku.math.PIDController;
 
-import hankutanku.math.Vector2D;
+import hankutanku.math.Vector;
 
 /**
  * Since the vex motor requires some time to turn to the correct position (we aren't
@@ -48,8 +48,8 @@ public class SwomniModule extends ScheduledTask
      * It's imperfect because we're using freely rotating coaxial omni wheels (doomed for
      * inaccuracy).
      */
-    private Vector2D displacementVector = Vector2D.ZERO;
-    public Vector2D getDisplacementVector()
+    private Vector displacementVector = Vector.ZERO;
+    public Vector getDisplacementVector()
     {
         return displacementVector;
     }
@@ -125,7 +125,7 @@ public class SwomniModule extends ScheduledTask
     }
     
     // The vector components which should constitute the direction and power of this wheel.
-    private Vector2D targetVector = Vector2D.polar(0, 0);
+    private Vector targetVector = Vector.polar(0, 0);
 
     // Swiveling properties.
     private double currentAbsoluteEncoderReading = 0;
@@ -202,7 +202,7 @@ public class SwomniModule extends ScheduledTask
      * Takes the desired rectangular coordinates for this motor, and converts them to polar
      * coordinates.
      */
-    public void setVectorTarget(@NonNull Vector2D target)
+    public void setVectorTarget(@NonNull Vector target)
     {
         targetVector = target;
     }
@@ -212,7 +212,7 @@ public class SwomniModule extends ScheduledTask
      */
     public void stopWheel()
     {
-        setVectorTarget(Vector2D.ZERO);
+        setVectorTarget(Vector.ZERO);
 
         turnMotor.setPosition(0.5);
 
@@ -235,8 +235,8 @@ public class SwomniModule extends ScheduledTask
 
             // Could be passively turning
             currentAbsoluteEncoderReading = swerveEncoder.position();
-            double currentAngle = Vector2D.clampAngle(currentAbsoluteEncoderReading - physicalEncoderOffset);
-            displacementVector = displacementVector.add(Vector2D.polar(driveMotor.currentDistanceMoved() - lastDriveMotorPosition, currentAngle));
+            double currentAngle = Vector.clampAngle(currentAbsoluteEncoderReading - physicalEncoderOffset);
+            displacementVector = displacementVector.add(Vector.polar(driveMotor.currentDistanceMoved() - lastDriveMotorPosition, currentAngle));
             lastDriveMotorPosition = driveMotor.currentDistanceMoved();
 
             if (errorResponder instanceof PIDController)
@@ -251,7 +251,7 @@ public class SwomniModule extends ScheduledTask
                         "Num skips: " + numAbsoluteEncoderSkips,
                         "Angle to turn: " + angleLeftToTurn,
                         errorResponder instanceof PIDController ? ((PIDController) errorResponder).summary() : "Using constant method",
-                        "Displacement Vector: " + displacementVector.toString(Vector2D.VectorCoordinates.POLAR));
+                        "Displacement Vector: " + displacementVector.toString(Vector.VectorInitializationState.POLAR));
         }
         else
         {
@@ -286,14 +286,14 @@ public class SwomniModule extends ScheduledTask
 
             // Shortest angle from current heading to desired heading.
             double desiredAngle = targetVector.angle;
-            double currentAngle = Vector2D.clampAngle(currentAbsoluteEncoderReading - physicalEncoderOffset);
+            double currentAngle = Vector.clampAngle(currentAbsoluteEncoderReading - physicalEncoderOffset);
 
             // Apply this movement to the cumulative displacement vector.
-            displacementVector = displacementVector.add(Vector2D.polar(driveMotor.currentDistanceMoved() - lastDriveMotorPosition, currentAngle));
+            displacementVector = displacementVector.add(Vector.polar(driveMotor.currentDistanceMoved() - lastDriveMotorPosition, currentAngle));
             lastDriveMotorPosition = driveMotor.currentDistanceMoved();
 
             // Calculate how to turn
-            double angleFromDesired = (Vector2D.clampAngle(desiredAngle - currentAngle) + 180) % 360 - 180;
+            double angleFromDesired = (Vector.clampAngle(desiredAngle - currentAngle) + 180) % 360 - 180;
             angleFromDesired = angleFromDesired < -180 ? angleFromDesired + 360 : angleFromDesired;
 
             // Clip this angle to 90 degree maximum turns.
@@ -347,11 +347,11 @@ public class SwomniModule extends ScheduledTask
             if (wheelConsole != null)
                 // Add console information.
                 wheelConsole.write(
-                        "Vector target: " + targetVector.toString(Vector2D.VectorCoordinates.POLAR),
+                        "Vector target: " + targetVector.toString(Vector.VectorInitializationState.POLAR),
                         "Angle to turn: " + angleLeftToTurn,
                         "Num skips: " + numAbsoluteEncoderSkips,
                         errorResponder instanceof PIDController ? ((PIDController) errorResponder).summary() : "Using custom function adjustment method",
-                        "Displacement Vector: " + displacementVector.toString(Vector2D.VectorCoordinates.POLAR));
+                        "Displacement Vector: " + displacementVector.toString(Vector.VectorInitializationState.POLAR));
         }
 
         // The ms to wait before updating again.

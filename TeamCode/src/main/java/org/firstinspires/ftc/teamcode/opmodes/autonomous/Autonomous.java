@@ -2,14 +2,8 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.teamcode.opmodes.CompetitionProgram;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
@@ -20,9 +14,7 @@ import hankutanku.EnhancedOpMode;
 import hankutanku.activity.HankuTankuRobotMonitor;
 import hankutanku.math.Function;
 import hankutanku.math.ParametrizedVector;
-import hankutanku.math.SingleParameterRunnable;
-import hankutanku.math.TimedFunction;
-import hankutanku.math.Vector2D;
+import hankutanku.math.Vector;
 import hankutanku.music.Tunes;
 import hankutanku.vision.opencv.OpenCVCam;
 import hankutanku.vision.vuforia.VuforiaCam;
@@ -74,7 +66,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
             module.driveMotor.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Orient for turning
-        robot.swomniDrive.orientSwerveModules(Vector2D.polar(1, 90), 5, new TimeMeasure(TimeMeasure.Units.SECONDS, 3), flow);
+        robot.swomniDrive.orientSwerveModules(Vector.polar(1, 90), 5, new TimeMeasure(TimeMeasure.Units.SECONDS, 3), flow);
 
         // region Initialization Detection of the Crypto Key and the Jewel Alignment
 
@@ -316,7 +308,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
         // Align wheels in preparation to drive backward (this is robot-centric).
         robot.swomniDrive.orientSwerveModules(
-                Vector2D.polar(1, 180),
+                Vector.polar(1, 180),
                 10,
                 new TimeMeasure(TimeMeasure.Units.SECONDS, 1.5),
                 flow);
@@ -343,10 +335,10 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
                     streak = 0;
 
                 robot.swomniDrive.setDesiredMovement(
-                        Vector2D.polar(
+                        Vector.polar(
                                 0.2 + (1 - batteryCoefficient) * .05
                                         - .15 * (closeThreshold - rangeSensorDist) / (255 - closeThreshold),
-                                Vector2D.clampAngle(180 + depositAngle)));
+                                Vector.clampAngle(180 + depositAngle)));
                 robot.swomniDrive.synchronousUpdate();
 
                 flow.yield();
@@ -366,7 +358,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
                     new Function() {
                         @Override
                         public double value(double input) {
-                            return Vector2D.clampAngle(180 + depositAngle); // opposite direction from angle offset (0 for bottom plate)
+                            return Vector.clampAngle(180 + depositAngle); // opposite direction from angle offset (0 for bottom plate)
                         }
                     }),
                     12.5, null, flow);
@@ -375,7 +367,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
         // Turn for better glyph placement
         double glyphPlacementAngle = 30 * (getAlliance() == Alliance.BLUE ? -1 : 1);
         robot.swomniDrive.turnRobotToHeading(
-                Vector2D.clampAngle(depositAngle + glyphPlacementAngle),
+                Vector.clampAngle(depositAngle + glyphPlacementAngle),
                 .009 + (1 - batteryCoefficient) * .05, 5, new TimeMeasure(TimeMeasure.Units.SECONDS, 8),
                 flow);
 
@@ -386,12 +378,12 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
         // Drive away from glyph
         robot.swomniDrive.setDesiredHeading(depositAngle);
         double driveOffsetAngle = 10 * (getAlliance() == Alliance.BLUE ? 1 : -1);
-        robot.swomniDrive.driveTime(Vector2D.polar(0.3, Vector2D.clampAngle(depositAngle + driveOffsetAngle)), 1200, flow);
+        robot.swomniDrive.driveTime(Vector.polar(0.3, Vector.clampAngle(depositAngle + driveOffsetAngle)), 1200, flow);
 
         // Smush in dat glyph
         double smushAngle = 20 * (getAlliance() == Alliance.BLUE ? 1 : -1);
-        robot.swomniDrive.setDesiredHeading(Vector2D.clampAngle(depositAngle + smushAngle));
-        robot.swomniDrive.driveTime(Vector2D.polar(0.35, Vector2D.clampAngle(180 + depositAngle)), 1200, flow);
+        robot.swomniDrive.setDesiredHeading(Vector.clampAngle(depositAngle + smushAngle));
+        robot.swomniDrive.driveTime(Vector.polar(0.35, Vector.clampAngle(180 + depositAngle)), 1200, flow);
 
         // Make sure we aren't touching the glyph
         robot.swomniDrive.driveDistance(ParametrizedVector.polar(

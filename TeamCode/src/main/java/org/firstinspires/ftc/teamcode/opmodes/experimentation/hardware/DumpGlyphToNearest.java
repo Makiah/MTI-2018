@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.vision.relicrecoveryvisionpipelines.Crypto
 
 import dude.makiah.androidlib.threading.TimeMeasure;
 import hankutanku.EnhancedOpMode;
-import hankutanku.math.Vector2D;
+import hankutanku.math.Vector;
 import hankutanku.vision.opencv.OpenCVCam;
 
 @Autonomous(name="Dump Glyph to Nearest", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
@@ -61,7 +61,7 @@ public class DumpGlyphToNearest extends EnhancedOpMode
                 offFromHorizontalIdeal = -1;
             }
 
-            robot.swomniDrive.setDesiredMovement(Vector2D.rectangular(forwardSpeed, horizontalSpeed));
+            robot.swomniDrive.setDesiredMovement(Vector.rectangular(forwardSpeed, horizontalSpeed));
 
             // Wait until we have a new reading (frames can take a while to process)
             double currentOffFromForward = offFromForwardIdeal, currentOffFromHorizontal = offFromHorizontalIdeal; // use other vals as anchor points

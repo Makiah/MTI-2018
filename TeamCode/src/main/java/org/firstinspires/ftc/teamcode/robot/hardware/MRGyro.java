@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
 
 import dude.makiah.androidlib.threading.TimeMeasure;
 import hankutanku.EnhancedOpMode;
-import hankutanku.math.Vector2D;
+import hankutanku.math.Vector;
 
 import hankutanku.phonesensors.Gyro;
 
@@ -72,6 +72,6 @@ public class MRGyro implements Gyro
     @Override
     public double getHeading()
     {
-        return Vector2D.clampAngle(sensor.getHeading());
+        return Vector.clampAngle(sensor.getHeading());
     }
 }
