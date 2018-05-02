@@ -76,6 +76,19 @@ public abstract class Vector
     }
 
     /**
+     * Does x * x + y * y if both are cartesian, otherwise |a||b|cos(theta)
+     * @param other vector to dot by
+     * @return the dot product
+     */
+    public double dot(Vector other)
+    {
+        if (this instanceof CartesianVector && other instanceof CartesianVector)
+            return this.x() * other.x() + this.y() * other.y();
+        else
+            return this.magnitude() * other.magnitude() * Math.cos(Math.toRadians(this.angle().quickestDegreeMovementTo(other.angle())));
+    }
+
+    /**
      * Whether the vector is pretty much the same
      * @param other the other vector to check
      * @return whether they are the same

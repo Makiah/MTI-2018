@@ -7,9 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import dude.makiah.androidlib.threading.TimeMeasure;
-import hankutanku.math.Function;
-import hankutanku.math.LimitedUpdateRateFunction;
-import hankutanku.math.PIDController;
+import hankutanku.math.function.LimitedUpdateRateFunction;
+import hankutanku.math.pid.PIDController;
 
 public class EncoderMotor extends ScheduledTask
 {
@@ -26,7 +25,7 @@ public class EncoderMotor extends ScheduledTask
     /**
      * The PID controller which this motor uses to stabilize itself.
      */
-    public final LimitedUpdateRateFunction errorResponder;
+    public final LimitedUpdateRateFunction<Double> errorResponder;
 
     /**
      * The process console which this motor needs to output data.

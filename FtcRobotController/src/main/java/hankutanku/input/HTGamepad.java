@@ -2,7 +2,9 @@ package hankutanku.input;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import hankutanku.math.Vector;
+import hankutanku.math.angle.DegreeAngle;
+import hankutanku.math.vector.CartesianVector;
+import hankutanku.math.vector.Vector;
 
 /**
  * A gamepad class which keeps track of intelligent robot control.
@@ -51,16 +53,16 @@ public class HTGamepad
 
     public Vector rightJoystick()
     {
-        return Vector.rectangular(gamepad.right_stick_x, -gamepad.right_stick_y).rotateBy(-90);
+        return new CartesianVector(gamepad.right_stick_x, -gamepad.right_stick_y).rotateBy(new DegreeAngle(-90));
     }
 
     public Vector leftJoystick()
     {
-        return Vector.rectangular(gamepad.left_stick_x, -gamepad.left_stick_y).rotateBy(-90);
+        return new CartesianVector(gamepad.left_stick_x, -gamepad.left_stick_y).rotateBy(new DegreeAngle(-90));
     }
 
     public Vector dpad()
     {
-        return Vector.rectangular((gamepad.dpad_left ? 1 : 0) + (gamepad.dpad_right ? -1 : 0), (gamepad.dpad_up ? 1 : 0) + (gamepad.dpad_down ? -1 : 0)).unit();
+        return new CartesianVector((gamepad.dpad_left ? 1 : 0) + (gamepad.dpad_right ? -1 : 0), (gamepad.dpad_up ? 1 : 0) + (gamepad.dpad_down ? -1 : 0)).unit();
     }
 }

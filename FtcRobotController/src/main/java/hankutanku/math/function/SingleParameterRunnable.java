@@ -1,4 +1,4 @@
-package hankutanku.math;
+package hankutanku.math.function;
 
 public interface SingleParameterRunnable
 {

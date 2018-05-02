@@ -1,4 +1,4 @@
-package hankutanku.math;
+package hankutanku.math.function;
 
 /**
  * Can be a function of type Angle, type Double, etc.
