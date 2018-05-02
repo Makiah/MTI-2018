@@ -21,7 +21,7 @@ public class DegreeAngle extends Angle
     private double radians = Double.NaN;
     @Override public double radians()
     {
-        if (Double.isNaN(degrees))
+        if (Double.isNaN(radians))
             radians = Math.toRadians(degrees);
 
         return radians;
