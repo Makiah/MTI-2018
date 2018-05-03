@@ -4,29 +4,29 @@
 ## Original Work
 
 ### X Correction
-![X Correction](doc/parabola/xcorrection.png)
+![X Correction](example/parabola/xcorrection.png)
 
 ### Y Correction
-![Y Correction](doc/parabola/ycorrection.png)
+![Y Correction](example/parabola/ycorrection.png)
 
 ### XY Correction
-![XY Correction](doc/parabola/xycorrection.png)
+![XY Correction](example/parabola/xycorrection.png)
 
 ### Path Correction (x^2)
-![Path Correction](doc/parabola/pathcorrection.png)
+![Path Correction](example/parabola/pathcorrection.png)
 
 ### Combined Correction
-![Combined Correction](doc/parabola/combinedcorrection.png)
+![Combined Correction](example/parabola/combinedcorrection.png)
 
 ## Improved Work
 
 Now uses derivative as a coefficient for more advanced correction
 
 ### XY Correction 
-![Combined Correction](doc/sine/xycorrection.png)
+![Combined Correction](example/sine/xycorrection.png)
 
 ### Path Correction 
-![Combined Correction](doc/sine/pathcorrection.png)
+![Combined Correction](example/sine/pathcorrection.png)
 
 ### XY Correction 
-![Combined Correction](doc/sine/combinedcorrection.png)
+![Combined Correction](example/sine/combinedcorrection.png)
