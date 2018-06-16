@@ -1,0 +1,17 @@
+# ninja log v5
+0	802	0	CMakeFiles/native-opencv.dir/src/main/cpp/native-opencv.cpp.o	695386f32afa11cf
+802	847	0	../../../../build/intermediates/cmake/release/obj/mips/libnative-opencv.so	4ceba18dbcad76ef
+0	769	0	CMakeFiles/glyph-detector.dir/src/main/cpp/relicrecoveryvisionpipelinescpp/glyph-detection.cpp.o	8a066a1c04ebca1c
+769	810	0	../../../../build/intermediates/cmake/release/obj/mips/libglyph-detector.so	b3b9f7e47789379a
+0	986	0	CMakeFiles/cryptokey-detector.dir/src/main/cpp/relicrecoveryvisionpipelinescpp/cryptokey-detection.cpp.o	93b81fb6758fb334
+986	1030	0	../../../../build/intermediates/cmake/release/obj/mips/libcryptokey-detector.so	ae24dc0bca9d2097
+0	805	0	CMakeFiles/cryptobox-detector.dir/src/main/cpp/relicrecoveryvisionpipelinescpp/cryptobox-detection.cpp.o	4520b553027ad0f
+805	844	0	../../../../build/intermediates/cmake/release/obj/mips/libcryptobox-detector.so	56a40b78a16fa2fb
+3	884	0	CMakeFiles/native-opencv.dir/src/main/cpp/native-opencv.cpp.o	695386f32afa11cf
+884	952	0	../../../../build/intermediates/cmake/release/obj/mips/libnative-opencv.so	4ceba18dbcad76ef
+2	829	0	CMakeFiles/glyph-detector.dir/src/main/cpp/relicrecoveryvisionpipelinescpp/glyph-detection.cpp.o	8a066a1c04ebca1c
+829	872	0	../../../../build/intermediates/cmake/release/obj/mips/libglyph-detector.so	b3b9f7e47789379a
+2	1049	0	CMakeFiles/cryptokey-detector.dir/src/main/cpp/relicrecoveryvisionpipelinescpp/cryptokey-detection.cpp.o	93b81fb6758fb334
+1049	1093	0	../../../../build/intermediates/cmake/release/obj/mips/libcryptokey-detector.so	ae24dc0bca9d2097
+1	826	0	CMakeFiles/cryptobox-detector.dir/src/main/cpp/relicrecoveryvisionpipelinescpp/cryptobox-detection.cpp.o	4520b553027ad0f
+826	875	0	../../../../build/intermediates/cmake/release/obj/mips/libcryptobox-detector.so	56a40b78a16fa2fb

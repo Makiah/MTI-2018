@@ -4,7 +4,7 @@ package hankutanku.math.function;
  * Can be a function of type Angle, type Double, etc.
  * @param <T>
  */
-public interface Function<T>
+public interface Function<T, U>
 {
-    T value(double input);
+    T value(U input);
 }

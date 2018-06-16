@@ -23,11 +23,11 @@ public class SpeedyMecanumDrive extends ScheduledTask
             new PolarVector(1, new DegreeAngle(225)),
             new PolarVector(1, new DegreeAngle(315))
     };
-    private EncoderMotor[] driveMotors; // clockwise orientation, starting with front right.
+    private final DcMotor[] driveMotors; // clockwise orientation, starting with front right.
 
-    public SpeedyMecanumDrive(HardwareInitializer initializer)
+    public SpeedyMecanumDrive(DcMotor frontLeft, DcMotor backLeft, DcMotor backRight, DcMotor frontRight)
     {
-//        this.frontRight = new EncoderMotor(initializer.initialize(DcMotor.class, "Front Right Drive"));
+        this.driveMotors = new DcMotor[]{frontLeft, backLeft, backRight, frontRight};
     }
 
     // The drive vector for the drivetrain (magnitude and angle).
@@ -77,6 +77,9 @@ public class SpeedyMecanumDrive extends ScheduledTask
         double powerIncreaseFactor = driveVector.magnitude() / largestDrivePower;
         for (int i = 0; i < drivePowers.length; i++)
             drivePowers[i] *= powerIncreaseFactor;
+
+        for (int i = 0; i < drivePowers.length; i++)
+            driveMotors[i].setPower(drivePowers[i]);
 
         // Update every 50 ms
         return new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 50);

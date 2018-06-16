@@ -27,7 +27,7 @@ public class ModifiedPIDController extends PIDController
      * @return correction result
      */
     @Override
-    public Double value(double error)
+    public Double value(Double error)
     {
         if (Math.abs(error) < errorThreshold)
             return 0.0;

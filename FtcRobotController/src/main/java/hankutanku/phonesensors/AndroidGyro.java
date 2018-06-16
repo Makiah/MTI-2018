@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
+import hankutanku.activity.HankuBaseActivity;
 import hankutanku.math.angle.DegreeAngle;
 
 public class AndroidGyro implements Gyro
@@ -96,7 +97,7 @@ public class AndroidGyro implements Gyro
     // Initialize all of the hardware variables
     public AndroidGyro()
     {
-        sensorManager = (SensorManager) FtcRobotControllerActivity.instance.getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) HankuBaseActivity.instance.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         instance = this;

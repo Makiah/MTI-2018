@@ -6,7 +6,7 @@ import hankutanku.math.function.LimitedUpdateRateFunction;
 /**
  * Largely based on http://www.societyofrobots.com/programming_PID.shtml.
  */
-public class PIDController implements LimitedUpdateRateFunction<Double>
+public class PIDController implements LimitedUpdateRateFunction<Double, Double>
 {
     /**
      * Typically the main drive in a control loop, KP reduces a large part of the overall
@@ -123,7 +123,7 @@ public class PIDController implements LimitedUpdateRateFunction<Double>
      * and figures out what to do with it next.
      * @return correction result
      */
-    public Double value(double error)
+    public Double value(Double error)
     {
         if (Math.abs(error) < errorThreshold)
             return 0.0;

@@ -1,3 +1,4 @@
-include ':FtcRobotController', ':RobotCore', ':FtcCommon', ':Hardware', ':Inspection', ':OpenFTC', ':makiahsandroidlib'
-include ':TeamCode'
 include ':AndroidCV-SDK'
+include ':makiahsandroidlib'
+include ':FtcRobotController'
+include ':TeamCode'

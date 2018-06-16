@@ -12,6 +12,8 @@ import org.firstinspires.ftc.robotcore.internal.network.PeerStatus;
 
 public class HankuTankuRobotMonitor extends SoundPlayingRobotMonitor
 {
+    private static final boolean enabled = false; // Janky I know
+
     public static boolean gotDisconnect = false;
 
     private NoDSFoundDaemon noDSFoundDaemon = null;
@@ -21,7 +23,8 @@ public class HankuTankuRobotMonitor extends SoundPlayingRobotMonitor
     {
         super();
         this.toRestart = toRestart;
-        this.noDSFoundDaemon = new NoDSFoundDaemon(this.toRestart);
+        if (enabled)
+            this.noDSFoundDaemon = new NoDSFoundDaemon(this.toRestart);
     }
 
     @Override public void updatePeerStatus(@NonNull PeerStatus peerStatus)
@@ -44,7 +47,8 @@ public class HankuTankuRobotMonitor extends SoundPlayingRobotMonitor
 
                 case DISCONNECTED:
                     if (noDSFoundDaemon == null)
-                        noDSFoundDaemon = new NoDSFoundDaemon(toRestart);
+                        if (enabled)
+                            noDSFoundDaemon = new NoDSFoundDaemon(toRestart);
 
                     playSound(soundDisconnect);
                     break;

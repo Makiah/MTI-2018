@@ -34,8 +34,10 @@ public abstract class EnhancedOpMode extends LinearOpMode implements TaskParent
      * @param minVolts  The minimum voltage (if below this, it'll signal the driver).
      * @param maxVolts  The maximum voltage (if above this, it'll just ignore it).
      */
+
     private void updateBatteryCoefficient(double minVolts, double maxVolts)
     {
+        /*
         // Slightly changes OpMode progression.
         String voltageCheck = FtcEventLoopHandler.latestBatterySend;
         double batteryCoefficient = 0.5; // between 1 (14.1V) and 0 (12.2V).
@@ -62,6 +64,11 @@ public abstract class EnhancedOpMode extends LinearOpMode implements TaskParent
         }
 
         this.batteryCoefficient = batteryCoefficient;
+        */
+
+        // TODO fix above
+
+        this.batteryCoefficient = .5;
     }
     protected double batteryCoefficient = 0;
 

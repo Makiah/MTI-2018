@@ -1,0 +1,6 @@
+/Users/makiah/Desktop/Robotics/MTI-2018-2/FtcRobotController/.externalNativeBuild/cmake/debug/mips/CMakeFiles/cryptobox-detector.dir
+/Users/makiah/Desktop/Robotics/MTI-2018-2/FtcRobotController/.externalNativeBuild/cmake/debug/mips/CMakeFiles/glyph-detector.dir
+/Users/makiah/Desktop/Robotics/MTI-2018-2/FtcRobotController/.externalNativeBuild/cmake/debug/mips/CMakeFiles/rebuild_cache.dir
+/Users/makiah/Desktop/Robotics/MTI-2018-2/FtcRobotController/.externalNativeBuild/cmake/debug/mips/CMakeFiles/cryptokey-detector.dir
+/Users/makiah/Desktop/Robotics/MTI-2018-2/FtcRobotController/.externalNativeBuild/cmake/debug/mips/CMakeFiles/edit_cache.dir
+/Users/makiah/Desktop/Robotics/MTI-2018-2/FtcRobotController/.externalNativeBuild/cmake/debug/mips/CMakeFiles/native-opencv.dir

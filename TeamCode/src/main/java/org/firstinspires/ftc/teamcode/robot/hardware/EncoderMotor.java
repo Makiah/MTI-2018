@@ -25,7 +25,7 @@ public class EncoderMotor extends ScheduledTask
     /**
      * The PID controller which this motor uses to stabilize itself.
      */
-    public final LimitedUpdateRateFunction<Double> errorResponder;
+    public final LimitedUpdateRateFunction<Double, Double> errorResponder;
 
     /**
      * The process console which this motor needs to output data.
