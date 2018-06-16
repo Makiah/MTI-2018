@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.robot.hardware.ClampingFlipper;
+import org.firstinspires.ftc.teamcode.robot.hardware.Harvester;
 import org.firstinspires.ftc.teamcode.robot.hardware.SpeedyMecanumDrive;
 
 import hankutanku.hardware.HardwareInitializer;
@@ -16,14 +17,15 @@ public class Robot
     public final SpeedyMecanumDrive drivetrain;
     public final ClampingFlipper flipper;
     public final DcMotor lift;
+    public final Harvester harvester;
 
     public Robot(HardwareInitializer initializer)
     {
         drivetrain = new SpeedyMecanumDrive(
-                initializer.initialize(DcMotor.class, "Front Left"),
-                initializer.initialize(DcMotor.class, "Back Left"),
-                initializer.initialize(DcMotor.class, "Back Right"),
-                initializer.initialize(DcMotor.class, "Front Right")
+                initializer.initialize(DcMotor.class, "front left"),
+                initializer.initialize(DcMotor.class, "rear left"),
+                initializer.initialize(DcMotor.class, "rear right"),
+                initializer.initialize(DcMotor.class, "front right")
         );
 
         flipper = new ClampingFlipper(
@@ -34,5 +36,10 @@ public class Robot
         );
 
         lift = initializer.initialize(DcMotor.class, "lift");
+
+        harvester = new Harvester(
+                initializer.initialize(DcMotor.class, "left harvester"),
+                initializer.initialize(DcMotor.class, "right harvester")
+        );
     }
 }

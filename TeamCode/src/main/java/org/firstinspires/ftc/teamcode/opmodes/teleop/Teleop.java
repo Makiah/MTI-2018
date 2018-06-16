@@ -42,6 +42,11 @@ public class Teleop extends EnhancedOpMode
             else
                 robot.lift.setPower(0);
 
+            if (robot.flipper.canIntakeGlyphs())
+                robot.harvester.run(gamepad1.left_trigger - gamepad1.right_trigger);
+            else
+                robot.harvester.run(0);
+
             flow.yield();
         }
     }

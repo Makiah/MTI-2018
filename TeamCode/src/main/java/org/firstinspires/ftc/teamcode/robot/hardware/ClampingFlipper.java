@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ClampingFlipper
 {
     private final Servo leftFlipper, rightFlipper, lowerClamp, upperClamp;
-    private final double rightFlipperUp = .9, rightFlipperDown = .328;
-    private final double leftFlipperUp = .1, leftFlipperDown = .672; // YOU CAN'T SET THEM TO 0 OR 1
-    private final double lowerClampRelease = .178, lowerClampClamp = .254;
-    private final double upperClampRelease = .217, upperClampClamp = .301;
+    private final double rightFlipperPush = .85, rightFlipperUp = .7, rightFlipperDown = .15;
+    private final double leftFlipperPush = .15, leftFlipperUp = .3, leftFlipperDown = .85; // YOU CAN'T SET THEM TO 0 OR 1
+    private final double lowerClampRelease = .18, lowerClampClamp = .31;
+    private final double upperClampRelease = .43, upperClampClamp = .57;
 
     public ClampingFlipper(Servo leftFlipper, Servo rightFlipper, Servo lowerClamp, Servo upperClamp)
     {
@@ -80,6 +80,9 @@ public class ClampingFlipper
             case 1:
                 lowerClamp.setPosition(lowerClampRelease);
                 upperClamp.setPosition(upperClampRelease);
+
+                leftFlipper.setPosition(leftFlipperPush);
+                rightFlipper.setPosition(rightFlipperPush);
                 break;
 
             case 2:
