@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot.hardware;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import hankutanku.math.angle.Angle;
 import hankutanku.math.angle.DegreeAngle;
 import hankutanku.math.vector.PolarVector;
 import hankutanku.math.vector.Vector;
@@ -13,19 +14,12 @@ import hankutanku.math.vector.Vector;
  */
 public class SpeedyMecanumDrive
 {
-    private static final Vector[] driveMotorOrientations = {
-            new PolarVector(1, new DegreeAngle(45)),
-            new PolarVector(1, new DegreeAngle(135)),
-            new PolarVector(1, new DegreeAngle(225)),
-            new PolarVector(1, new DegreeAngle(315))
-    };
-    private final DcMotor[] driveMotors; // clockwise orientation, starting with front right.
+    private static final double ROBOT_PHI = Math.toDegrees(Math.atan2(18, 18)); // Will be 45 degrees with perfect square dimensions.
+    private static final double[] WHEEL_ORIENTATIONS = {ROBOT_PHI - 90, (180 - ROBOT_PHI) - 90, (180 + ROBOT_PHI) - 90, (360 - ROBOT_PHI) - 90};
+    private final DcMotor[] driveMotors; // frontLeft, backLeft, backRight, frontRight respectively.
 
     public SpeedyMecanumDrive(DcMotor frontLeft, DcMotor backLeft, DcMotor backRight, DcMotor frontRight)
     {
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
         this.driveMotors = new DcMotor[]{frontLeft, backLeft, backRight, frontRight};
     }
 
@@ -33,13 +27,17 @@ public class SpeedyMecanumDrive
     {
         double[] drivePowers = new double[4];
 
-        // Dot product (cosine) to determine the power to apply to each wheel.
-        for (int i = 0; i < driveMotors.length; i++)
-            drivePowers[i] = (driveVector != null ? driveVector.dot(driveMotorOrientations[i]) : 0) + turnSpeed;
+        for (int i = 0; i < drivePowers.length; i++)
+            drivePowers[i] = turnSpeed;
 
         if (driveVector != null)
         {
+            // Dot product (cosine) to determine the power to apply to each wheel.
+            for (int i = 0; i < driveMotors.length; i++)
+                drivePowers[i] = Math.cos(driveVector.angle().degrees() - WHEEL_ORIENTATIONS[i]);
+
             // Normalize the vectors to ensure we're moving at max speed allowed by the drive vector.
+            // For example, traveling forward with classical code results in .7 on each motor, this ensures that we actually move at 1 power (max speed).
             double largestDrivePower = 0;
             for (double drivePower : drivePowers)
                 if (Math.abs(drivePower) > largestDrivePower)
