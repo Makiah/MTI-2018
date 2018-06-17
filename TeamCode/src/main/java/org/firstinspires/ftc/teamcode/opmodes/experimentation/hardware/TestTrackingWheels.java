@@ -3,9 +3,10 @@ package org.firstinspires.ftc.teamcode.opmodes.experimentation.hardware;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.OpModeDisplayGroups;
 import org.firstinspires.ftc.teamcode.robot.hardware.AbsoluteEncoder;
 
-@TeleOp(name="Test Tracking Wheels", group="a")
+@TeleOp(name="Test Tracking Wheels", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
 public class TestTrackingWheels extends LinearOpMode
 {
     @Override
@@ -17,9 +18,9 @@ public class TestTrackingWheels extends LinearOpMode
 
         while (!isStopRequested())
         {
-            telemetry.addLine("Left: " + leftWheel.position());
-            telemetry.addLine("Center: " + centerWheel.position());
-            telemetry.addLine("Right: " + rightWheel.position());
+            telemetry.addLine("Left: " + leftWheel.heading());
+            telemetry.addLine("Center: " + centerWheel.heading());
+            telemetry.addLine("Right: " + rightWheel.heading());
             telemetry.update();
 
             idle();

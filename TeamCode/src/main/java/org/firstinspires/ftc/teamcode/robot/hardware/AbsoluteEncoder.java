@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.robot.hardware;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 
+import hankutanku.math.angle.Angle;
+import hankutanku.math.angle.DegreeAngle;
+
 public class AbsoluteEncoder
 {
     public final AnalogInput device;
@@ -10,8 +13,8 @@ public class AbsoluteEncoder
         this.device = device;
     }
 
-    public double position()
+    public Angle heading()
     {
-        return device.getVoltage();
+        return new DegreeAngle(device.getVoltage() / 3.3 * 360);
     }
 }

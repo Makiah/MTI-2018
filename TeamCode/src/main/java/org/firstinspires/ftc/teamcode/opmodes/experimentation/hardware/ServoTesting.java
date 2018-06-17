@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Servo Testing", group="a")
+import org.firstinspires.ftc.teamcode.OpModeDisplayGroups;
+
+@TeleOp(name="Servo Testing", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
 public class ServoTesting extends LinearOpMode
 {
     /**

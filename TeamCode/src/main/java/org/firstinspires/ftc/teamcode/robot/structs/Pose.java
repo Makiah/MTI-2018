@@ -20,4 +20,9 @@ public class Pose
         this.position = position;
         this.heading = heading;
     }
+
+    public String toString()
+    {
+        return "Position is " + position.toString() + " and heading is " + heading.degrees();
+    }
 }

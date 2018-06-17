@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="Are Motors Correct?", group="a")
+import org.firstinspires.ftc.teamcode.OpModeDisplayGroups;
+
+@TeleOp(name="Are Motors Correct?", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
 public class AreMotorsCorrect extends LinearOpMode
 {
     class MotorNamePair
