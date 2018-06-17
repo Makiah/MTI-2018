@@ -12,6 +12,6 @@ public class AbsoluteEncoder
 
     public double position()
     {
-        return device.getVoltage() / 5.0 * 360;
+        return device.getVoltage();
     }
 }

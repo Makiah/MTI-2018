@@ -53,12 +53,12 @@ public class HTGamepad
 
     public Vector rightJoystick()
     {
-        return new CartesianVector(gamepad.right_stick_x, -gamepad.right_stick_y).rotateBy(new DegreeAngle(-90));
+        return new CartesianVector(gamepad.right_stick_x, -gamepad.right_stick_y);
     }
 
     public Vector leftJoystick()
     {
-        return new CartesianVector(gamepad.left_stick_x, -gamepad.left_stick_y).rotateBy(new DegreeAngle(-90));
+        return new CartesianVector(gamepad.left_stick_x, -gamepad.left_stick_y);
     }
 
     public Vector dpad()

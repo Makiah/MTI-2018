@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 import hankutanku.EnhancedOpMode;
 import hankutanku.input.HTButton;
 import hankutanku.input.HTGamepad;
+import hankutanku.math.angle.DegreeAngle;
 
 @TeleOp(name="Teleop", group= OpModeDisplayGroups.FINAL_BOT_OPMODES)
 public class Teleop extends EnhancedOpMode
@@ -28,8 +29,7 @@ public class Teleop extends EnhancedOpMode
             HTGamepad.CONTROLLER1.update();
             // HTGamepad.CONTROLLER2.update(); (not currently in use)
 
-            robot.drivetrain.setDriveVector(HTGamepad.CONTROLLER1.leftJoystick());
-            robot.drivetrain.setTurnSpeed(HTGamepad.CONTROLLER1.rightJoystick().x());
+            robot.drivetrain.move(HTGamepad.CONTROLLER1.leftJoystick(), HTGamepad.CONTROLLER1.rightJoystick().x());
 
             if (HTGamepad.CONTROLLER1.x.currentState == HTButton.ButtonState.JUST_TAPPED)
                 robot.flipper.attemptFlipperStateIncrement();

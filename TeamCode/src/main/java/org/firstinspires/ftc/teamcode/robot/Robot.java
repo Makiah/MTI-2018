@@ -41,5 +41,7 @@ public class Robot
                 initializer.initialize(DcMotor.class, "left harvester"),
                 initializer.initialize(DcMotor.class, "right harvester")
         );
+
+        initializer.initialize(Servo.class, "servo4").setPosition(0); // jewel knocker (temporary).
     }
 }
