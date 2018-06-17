@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import dude.makiah.androidlib.logging.LoggingBase;
+import dude.makiah.androidlib.logging.ProcessConsole;
 import hankutanku.math.angle.Angle;
 import hankutanku.math.angle.DegreeAngle;
-import hankutanku.math.vector.PolarVector;
 import hankutanku.math.vector.Vector;
 
 /**
@@ -15,12 +15,21 @@ import hankutanku.math.vector.Vector;
 public class SpeedyMecanumDrive
 {
     private static final double ROBOT_PHI = Math.toDegrees(Math.atan2(18, 18)); // Will be 45 degrees with perfect square dimensions.
-    private static final double[] WHEEL_ORIENTATIONS = {ROBOT_PHI - 90, (180 - ROBOT_PHI) - 90, (180 + ROBOT_PHI) - 90, (360 - ROBOT_PHI) - 90};
+    private static final Angle[] WHEEL_ORIENTATIONS = {
+            new DegreeAngle(ROBOT_PHI - 90),
+            new DegreeAngle((180 - ROBOT_PHI) - 90),
+            new DegreeAngle((180 + ROBOT_PHI) - 90),
+            new DegreeAngle((360 - ROBOT_PHI) - 90)
+    };
     private final DcMotor[] driveMotors; // frontLeft, backLeft, backRight, frontRight respectively.
+
+    private final ProcessConsole drivePowerConsole;
 
     public SpeedyMecanumDrive(DcMotor frontLeft, DcMotor backLeft, DcMotor backRight, DcMotor frontRight)
     {
         this.driveMotors = new DcMotor[]{frontLeft, backLeft, backRight, frontRight};
+
+        this.drivePowerConsole = LoggingBase.instance.newProcessConsole("Mecanum Drive");
     }
 
     public void move(Vector driveVector, double turnSpeed)
@@ -34,7 +43,7 @@ public class SpeedyMecanumDrive
         {
             // Dot product (cosine) to determine the power to apply to each wheel.
             for (int i = 0; i < driveMotors.length; i++)
-                drivePowers[i] = Math.cos(driveVector.angle().degrees() - WHEEL_ORIENTATIONS[i]);
+                drivePowers[i] = Math.cos(driveVector.angle().subtract(WHEEL_ORIENTATIONS[i]).radians());
 
             // Normalize the vectors to ensure we're moving at max speed allowed by the drive vector.
             // For example, traveling forward with classical code results in .7 on each motor, this ensures that we actually move at 1 power (max speed).
@@ -50,5 +59,12 @@ public class SpeedyMecanumDrive
 
         for (int i = 0; i < drivePowers.length; i++)
             driveMotors[i].setPower(drivePowers[i]);
+
+        this.drivePowerConsole.write(
+                "Front Left: " + drivePowers[0],
+                "Back Left: " + drivePowers[1],
+                "Back Right: " + drivePowers[2],
+                "Front Right: " + drivePowers[3]
+        );
     }
 }
