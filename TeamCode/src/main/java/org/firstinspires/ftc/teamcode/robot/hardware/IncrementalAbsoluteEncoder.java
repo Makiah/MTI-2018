@@ -15,13 +15,10 @@ public class IncrementalAbsoluteEncoder
 
     public void updateIncremental()
     {
-        if (previousEncoderAngle == null)
-        {
-            previousEncoderAngle = absoluteEncoder.heading();
-            return;
-        }
+        if (previousEncoderAngle != null)
+            totalAngularOffset += previousEncoderAngle.quickestDegreeMovementTo(absoluteEncoder.heading());
 
-        totalAngularOffset += previousEncoderAngle.quickestDegreeMovementTo(absoluteEncoder.heading());
+        previousEncoderAngle = absoluteEncoder.heading();
     }
 
     public double getTotalAngularOffset()

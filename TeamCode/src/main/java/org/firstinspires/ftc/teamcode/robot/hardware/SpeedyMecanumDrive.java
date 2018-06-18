@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 import dude.makiah.androidlib.logging.LoggingBase;
 import dude.makiah.androidlib.logging.ProcessConsole;
@@ -42,6 +43,11 @@ public class SpeedyMecanumDrive
      */
     public void move(Vector driveVector, double turnSpeed)
     {
+        if (driveVector.magnitude() < .01)
+            driveVector = null;
+        else
+            driveVector = driveVector.rotateBy(new DegreeAngle(-90));
+
         double[] drivePowers = new double[4];
 
         for (int i = 0; i < drivePowers.length; i++)
@@ -51,16 +57,16 @@ public class SpeedyMecanumDrive
         {
             // Dot product (cosine) to determine the power to apply to each wheel.
             for (int i = 0; i < driveMotors.length; i++)
-                drivePowers[i] = Math.cos(driveVector.angle().subtract(WHEEL_ORIENTATIONS[i]).radians());
+                drivePowers[i] += Math.cos(driveVector.angle().subtract(WHEEL_ORIENTATIONS[i]).radians());
 
             // Normalize the vectors to ensure we're moving at max speed allowed by the drive vector.
             // For example, traveling forward with classical code results in .7 on each motor, this ensures that we actually move at 1 power (max speed).
             double largestDrivePower = 0;
             for (double drivePower : drivePowers)
                 if (Math.abs(drivePower) > largestDrivePower)
-                    largestDrivePower = drivePower;
+                    largestDrivePower = Math.abs(drivePower);
 
-            double powerIncreaseFactor = driveVector.magnitude() / largestDrivePower;
+            double powerIncreaseFactor = Range.clip(driveVector.magnitude() + Math.abs(turnSpeed), 0, 1) / largestDrivePower;
             for (int i = 0; i < drivePowers.length; i++)
                 drivePowers[i] *= powerIncreaseFactor;
         }
@@ -72,7 +78,9 @@ public class SpeedyMecanumDrive
                 "Front Left: " + drivePowers[0],
                 "Back Left: " + drivePowers[1],
                 "Back Right: " + drivePowers[2],
-                "Front Right: " + drivePowers[3]
+                "Front Right: " + drivePowers[3],
+                "Driving Angle: " + (driveVector != null ? driveVector.angle().degrees() : " N/A"),
+                "Turn " + turnSpeed
         );
     }
 }

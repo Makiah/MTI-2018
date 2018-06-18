@@ -23,7 +23,8 @@ public class TestPositionTracking extends LinearOpMode
         while (!isStopRequested())
         {
             ptews.update();
-            telemetry.addLine(ptews.getCurrentPose().toString());
+            for (String line : ptews.getTrackingSummary())
+                telemetry.addLine(line);
             telemetry.update();
 
             idle();

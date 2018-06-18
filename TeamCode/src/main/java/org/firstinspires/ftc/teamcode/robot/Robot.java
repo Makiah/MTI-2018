@@ -18,6 +18,7 @@ public class Robot
     public final ClampingFlipper flipper;
     public final DcMotor lift;
     public final Harvester harvester;
+    public final DcMotor relic;
 
     public Robot(HardwareInitializer initializer)
     {
@@ -41,6 +42,8 @@ public class Robot
                 initializer.initialize(DcMotor.class, "left harvester"),
                 initializer.initialize(DcMotor.class, "right harvester")
         );
+
+        relic = initializer.initialize(DcMotor.class, "relic");
 
         initializer.initialize(Servo.class, "servo4").setPosition(0); // jewel knocker (temporary).
     }

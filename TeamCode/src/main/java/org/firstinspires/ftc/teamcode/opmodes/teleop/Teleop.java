@@ -29,7 +29,7 @@ public class Teleop extends EnhancedOpMode
             HTGamepad.CONTROLLER1.update();
             // HTGamepad.CONTROLLER2.update(); (not currently in use)
 
-            robot.drivetrain.move(HTGamepad.CONTROLLER1.leftJoystick(), HTGamepad.CONTROLLER1.rightJoystick().x());
+            robot.drivetrain.move(HTGamepad.CONTROLLER1.leftJoystick(), HTGamepad.CONTROLLER1.gamepad.right_stick_x);
 
             if (HTGamepad.CONTROLLER1.x.currentState == HTButton.ButtonState.JUST_TAPPED)
                 robot.flipper.attemptFlipperStateIncrement();
@@ -37,10 +37,17 @@ public class Teleop extends EnhancedOpMode
 
             if (gamepad1.right_bumper)
                 robot.lift.setPower(1);
-            else if (gamepad1.right_bumper)
+            else if (gamepad1.left_bumper)
                 robot.lift.setPower(-1);
             else
                 robot.lift.setPower(0);
+
+            if (gamepad1.dpad_left)
+                robot.relic.setPower(1);
+            else if (gamepad1.dpad_right)
+                robot.relic.setPower(-1);
+            else
+                robot.relic.setPower(0);
 
             if (robot.flipper.canIntakeGlyphs())
                 robot.harvester.run(gamepad1.left_trigger - gamepad1.right_trigger);

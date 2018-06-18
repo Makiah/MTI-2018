@@ -56,4 +56,13 @@ public class PoseTrackingEncoderWheelSystem
     {
         return currentPose;
     }
+
+    public String[] getTrackingSummary()
+    {
+        return new String[]{
+                "Left wheel is: " + leftWheel.getTotalAngularOffset(),
+                "Center wheel is: " + centerWheel.getTotalAngularOffset(),
+                "Right wheel is: " + rightWheel.getTotalAngularOffset(),
+                "Pose is : " + getCurrentPose().toString()};
+    }
 }
