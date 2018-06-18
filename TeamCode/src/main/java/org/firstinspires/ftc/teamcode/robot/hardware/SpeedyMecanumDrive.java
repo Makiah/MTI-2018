@@ -32,6 +32,14 @@ public class SpeedyMecanumDrive
         this.drivePowerConsole = LoggingBase.instance.newProcessConsole("Mecanum Drive");
     }
 
+    /**
+     * With typical mecanum control, running the drive directly forward only powers each wheel
+     * at sqrt(2) / 2 power forward (.707 approximately) because of how cos and sin are evaluated.
+     * This normalizes them to actually drive at the full power allowed by the magnitude of the
+     * drive vector.
+     * @param driveVector The speed and heading at which to drive.
+     * @param turnSpeed   The speed at which to turn the robot.
+     */
     public void move(Vector driveVector, double turnSpeed)
     {
         double[] drivePowers = new double[4];
