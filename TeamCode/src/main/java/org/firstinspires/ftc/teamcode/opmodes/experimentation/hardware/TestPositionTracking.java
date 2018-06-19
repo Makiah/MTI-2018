@@ -15,9 +15,9 @@ public class TestPositionTracking extends LinearOpMode
     public void runOpMode()
     {
         PoseTrackingEncoderWheelSystem ptews = new PoseTrackingEncoderWheelSystem(
-                new IncrementalAbsoluteEncoder(new AbsoluteEncoder(hardwareMap.analogInput.get("left tracking wheel"))),
-                new IncrementalAbsoluteEncoder(new AbsoluteEncoder(hardwareMap.analogInput.get("center tracking wheel"))),
-                new IncrementalAbsoluteEncoder(new AbsoluteEncoder(hardwareMap.analogInput.get("right tracking wheel")))
+                new AbsoluteEncoder(hardwareMap.analogInput.get("left tracking wheel")),
+                new AbsoluteEncoder(hardwareMap.analogInput.get("center tracking wheel")),
+                new AbsoluteEncoder(hardwareMap.analogInput.get("right tracking wheel"))
         );
 
         while (!isStopRequested())

@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.robot.hardware.AbsoluteEncoder;
 import org.firstinspires.ftc.teamcode.robot.hardware.ClampingFlipper;
 import org.firstinspires.ftc.teamcode.robot.hardware.Harvester;
+import org.firstinspires.ftc.teamcode.robot.hardware.PoseTrackingEncoderWheelSystem;
 import org.firstinspires.ftc.teamcode.robot.hardware.SpeedyMecanumDrive;
 
 import hankutanku.hardware.HardwareInitializer;
@@ -19,6 +22,7 @@ public class Robot
     public final DcMotor lift;
     public final Harvester harvester;
     public final DcMotor relic;
+    public final PoseTrackingEncoderWheelSystem ptews;
 
     public Robot(HardwareInitializer initializer)
     {
@@ -46,5 +50,11 @@ public class Robot
         relic = initializer.initialize(DcMotor.class, "relic");
 
         initializer.initialize(Servo.class, "servo4").setPosition(0); // jewel knocker (temporary).
+
+        ptews = new PoseTrackingEncoderWheelSystem(
+                new AbsoluteEncoder(initializer.initialize(AnalogInput.class, "left tracking wheel")),
+                new AbsoluteEncoder(initializer.initialize(AnalogInput.class, "center tracking wheel")),
+                new AbsoluteEncoder(initializer.initialize(AnalogInput.class, "right tracking wheel"))
+        );
     }
 }

@@ -5,7 +5,7 @@ import hankutanku.math.angle.Angle;
 public class IncrementalAbsoluteEncoder
 {
     private final AbsoluteEncoder absoluteEncoder;
-    private double totalAngularOffset = 0.0;
+    private double totalDegreeOffset = 0.0;
     private Angle previousEncoderAngle = null;
 
     public IncrementalAbsoluteEncoder(AbsoluteEncoder absoluteEncoder)
@@ -16,13 +16,13 @@ public class IncrementalAbsoluteEncoder
     public void updateIncremental()
     {
         if (previousEncoderAngle != null)
-            totalAngularOffset += previousEncoderAngle.quickestDegreeMovementTo(absoluteEncoder.heading());
+            totalDegreeOffset += previousEncoderAngle.quickestDegreeMovementTo(absoluteEncoder.heading());
 
         previousEncoderAngle = absoluteEncoder.heading();
     }
 
-    public double getTotalAngularOffset()
+    public double getTotalDegreeOffset()
     {
-        return totalAngularOffset;
+        return totalDegreeOffset;
     }
 }

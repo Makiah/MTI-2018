@@ -9,42 +9,79 @@ import hankutanku.math.vector.Vector;
 
 public class PoseTrackingEncoderWheelSystem
 {
-    private final IncrementalAbsoluteEncoder leftWheel, centerWheel, rightWheel;
+    private final Angle headingChangeRequiredForPoseUpdate = new DegreeAngle(2); // If we keep track of every shift in noise then the data starts to drift.
+
+    private final AbsoluteEncoder leftWheel, centerWheel, rightWheel; // These COULD be incremental, but we'd just be recalculating stuff.
     private Pose currentPose = new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(0, 0), new DegreeAngle(0)); // Reference changes over time.
-    private double leftWheelPrevious = 0.0, centerWheelPrevious = 0.0, rightWheelPrevious = 0.0;
+
+    private Angle leftWheelCurrent = new DegreeAngle(0), centerWheelCurrent = new DegreeAngle(0), rightWheelCurrent = new DegreeAngle(0);
+    private Angle leftWheelPrevious = new DegreeAngle(0), centerWheelPrevious = new DegreeAngle(0), rightWheelPrevious = new DegreeAngle(0);
     private double leftWheelDelta = 0.0, centerWheelDelta = 0.0, rightWheelDelta = 0.0;
+    private double leftWheelCumulative = 0.0, rightWheelCumulative = 0.0;
 
     private final double robotSpinCircumference = 18 * Math.PI;
     private final double angularToPositionalConversionConstant = 1 / 360.0 * (Math.PI * 4);
 
-    public PoseTrackingEncoderWheelSystem(IncrementalAbsoluteEncoder leftWheel, IncrementalAbsoluteEncoder centerWheel, IncrementalAbsoluteEncoder rightWheel)
+    public PoseTrackingEncoderWheelSystem(AbsoluteEncoder leftWheel, AbsoluteEncoder centerWheel, AbsoluteEncoder rightWheel)
     {
         this.leftWheel = leftWheel;
         this.centerWheel = centerWheel;
         this.rightWheel = rightWheel;
+
+        leftWheelPrevious = leftWheel.heading();
+        centerWheelPrevious = centerWheel.heading();
+        rightWheelPrevious = rightWheel.heading();
+    }
+
+    public void provideExternalPoseInformation(Pose info)
+    {
+        if (info.poseType == Pose.PoseType.ABSOLUTE)
+            this.currentPose = info;
+        else
+        {
+            this.currentPose.add(info);
+        }
     }
 
     public void update()
     {
-        leftWheel.updateIncremental();
-        centerWheel.updateIncremental();
-        rightWheel.updateIncremental();
+        leftWheelCurrent = leftWheel.heading();
+        centerWheelCurrent = centerWheel.heading();
+        rightWheelCurrent = rightWheel.heading();
 
-        double leftWheelPosition = leftWheel.getTotalAngularOffset() * angularToPositionalConversionConstant,
-                centerWheelPosition = centerWheel.getTotalAngularOffset() * angularToPositionalConversionConstant,
-                rightWheelPosition = rightWheel.getTotalAngularOffset() * angularToPositionalConversionConstant;
+        // Ensure that each delta reaches the minimum, otherwise ignore it.
+        leftWheelDelta = leftWheelPrevious.quickestDegreeMovementTo(leftWheelCurrent);
+        if (Math.abs(leftWheelDelta) < headingChangeRequiredForPoseUpdate.degrees())
+            leftWheelDelta = 0;
+        else
+        {
+            leftWheelDelta *= angularToPositionalConversionConstant;
+            leftWheelPrevious = leftWheelCurrent;
+        }
 
-        leftWheelDelta = leftWheelPosition - leftWheelPrevious;
-        centerWheelDelta = centerWheelPosition - centerWheelPrevious;
-        rightWheelDelta = rightWheelPosition - rightWheelPrevious;
+        centerWheelDelta = centerWheelPrevious.quickestDegreeMovementTo(centerWheelCurrent);
+        if (Math.abs(centerWheelDelta) < headingChangeRequiredForPoseUpdate.degrees())
+            centerWheelDelta = 0;
+        else
+        {
+            leftWheelDelta *= angularToPositionalConversionConstant;
+            centerWheelPrevious = centerWheelCurrent;
+        }
 
-        leftWheelPrevious = leftWheelPosition;
-        centerWheelPrevious = centerWheelPosition;
-        rightWheelPrevious = rightWheelPosition;
+        rightWheelDelta = rightWheelPrevious.quickestDegreeMovementTo(rightWheelCurrent);
+        if (Math.abs(rightWheelDelta) < headingChangeRequiredForPoseUpdate.degrees())
+            rightWheelDelta = 0;
+        else
+        {
+            leftWheelDelta *= angularToPositionalConversionConstant;
+            rightWheelPrevious = rightWheelCurrent;
+        }
 
         // The extent to which the left and right wheels have different measurements, represents angular orientation difference.
         // Doesn't at all depend on previous measurements.
-        Angle currentHeading = new DegreeAngle((rightWheelPosition - leftWheelPosition) / robotSpinCircumference * 180.0);
+        leftWheelCumulative += leftWheelDelta;
+        rightWheelCumulative += rightWheelDelta;
+        Angle currentHeading = new DegreeAngle((rightWheelCumulative - leftWheelCumulative) / robotSpinCircumference * 180.0);
 
         // Now for position, which does in fact depend on previous movements.
         Vector positionDelta = new CartesianVector(centerWheelDelta, (rightWheelDelta + leftWheelDelta) / 2.0).rotateBy(currentHeading);
@@ -61,14 +98,7 @@ public class PoseTrackingEncoderWheelSystem
     public String[] getTrackingSummary()
     {
         return new String[]{
-                "Left wheel is: " + leftWheel.getTotalAngularOffset(),
-                "Center wheel is: " + centerWheel.getTotalAngularOffset(),
-                "Right wheel is: " + rightWheel.getTotalAngularOffset(),
-                "~~~~~~~~~",
-                "Left wheel delta is: " + leftWheelDelta,
-                "Center wheel delta is: " + centerWheelDelta,
-                "Right wheel delta is: " + rightWheelDelta,
-                "~~~~~~~~~",
-                "Pose is : " + getCurrentPose().toString()};
+                "Pose is : " + getCurrentPose().toString()
+        };
     }
 }

@@ -3,10 +3,15 @@ package org.firstinspires.ftc.teamcode.robot.hardware;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.robot.structs.Pose;
+
 import dude.makiah.androidlib.logging.LoggingBase;
 import dude.makiah.androidlib.logging.ProcessConsole;
 import hankutanku.math.angle.Angle;
 import hankutanku.math.angle.DegreeAngle;
+import hankutanku.math.function.Function;
+import hankutanku.math.vector.CartesianVector;
+import hankutanku.math.vector.PolarVector;
 import hankutanku.math.vector.Vector;
 
 /**
@@ -43,7 +48,7 @@ public class SpeedyMecanumDrive
      */
     public void move(Vector driveVector, double turnSpeed)
     {
-        if (driveVector.magnitude() < .01)
+        if (driveVector == null || driveVector.magnitude() < .01)
             driveVector = null;
         else
             driveVector = driveVector.rotateBy(new DegreeAngle(-90));
@@ -82,5 +87,37 @@ public class SpeedyMecanumDrive
                 "Driving Angle: " + (driveVector != null ? driveVector.angle().degrees() : " N/A"),
                 "Turn " + turnSpeed
         );
+    }
+
+    /**
+     * Tells the mecanum drivetrain to match a given robot position and heading.
+     * @param ptews  The tracking code which keeps track of the trig and changes in encoder heading.
+     * @param desiredPose  The pose which the mecanum drive should attempt to reach.
+     * @param minimumInchesFromTarget  The maximum number of inches from the target pose which enables the robot to stop this code block.
+     * @param minimumHeadingFromTarget  The maximum angle from the target pose which enables the robot to stop this code block.
+     * @param completionBasedFunction  A function which returns void and receives a 0-1 input representing how close we are from execution completion.
+     */
+    public void matchPose(PoseTrackingEncoderWheelSystem ptews, Pose desiredPose, double minimumInchesFromTarget, Angle minimumHeadingFromTarget, Function<Void, Double> completionBasedFunction)
+    {
+        // Relative means relative to the current robot pose.
+        if (desiredPose.poseType == Pose.PoseType.RELATIVE)
+            desiredPose = new Pose(Pose.PoseType.ABSOLUTE, ptews.getCurrentPose().position.add(desiredPose.position), ptews.getCurrentPose().heading.add(desiredPose.heading));
+
+        while (true)
+        {
+            ptews.update();
+
+            Pose currentPose = ptews.getCurrentPose();
+
+            Vector positionalOffsetFromTarget = desiredPose.position.subtract(currentPose.position);
+            double headingDegreeOffsetFromTarget = currentPose.heading.quickestDegreeMovementTo(desiredPose.heading);
+
+            if (positionalOffsetFromTarget.magnitude() <= minimumInchesFromTarget && Math.abs(headingDegreeOffsetFromTarget) <= minimumHeadingFromTarget.degrees())
+                break;
+
+            move(positionalOffsetFromTarget.divide(5), headingDegreeOffsetFromTarget / 5);
+        }
+
+        move(null, 0);
     }
 }

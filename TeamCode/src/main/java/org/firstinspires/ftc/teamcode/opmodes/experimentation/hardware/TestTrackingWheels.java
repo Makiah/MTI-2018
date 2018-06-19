@@ -33,13 +33,13 @@ public class TestTrackingWheels extends LinearOpMode
             telemetry.addLine("~~~~~~~~~~~~~~~~");
 
             leftIncremental.updateIncremental();
-            telemetry.addLine("Left Incremental: " + df.format(leftIncremental.getTotalAngularOffset()));
+            telemetry.addLine("Left Incremental: " + df.format(leftIncremental.getTotalDegreeOffset()));
 
             centerIncremental.updateIncremental();
-            telemetry.addLine("Center Incremental: " + df.format(centerIncremental.getTotalAngularOffset()));
+            telemetry.addLine("Center Incremental: " + df.format(centerIncremental.getTotalDegreeOffset()));
 
             rightIncremental.updateIncremental();
-            telemetry.addLine("Right Incremental: " + df.format(rightIncremental.getTotalAngularOffset()));
+            telemetry.addLine("Right Incremental: " + df.format(rightIncremental.getTotalDegreeOffset()));
 
             telemetry.update();
 
