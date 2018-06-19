@@ -23,6 +23,6 @@ public class Pose
 
     public String toString()
     {
-        return "Position is " + position.toString() + " and heading is " + heading.degrees();
+        return "Position is " + position.toString(false) + " and robot facing heading " + heading.degrees();
     }
 }

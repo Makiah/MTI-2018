@@ -12,6 +12,7 @@ public class PoseTrackingEncoderWheelSystem
     private final IncrementalAbsoluteEncoder leftWheel, centerWheel, rightWheel;
     private Pose currentPose = new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(0, 0), new DegreeAngle(0)); // Reference changes over time.
     private double leftWheelPrevious = 0.0, centerWheelPrevious = 0.0, rightWheelPrevious = 0.0;
+    private double leftWheelDelta = 0.0, centerWheelDelta = 0.0, rightWheelDelta = 0.0;
 
     private final double robotSpinCircumference = 18 * Math.PI;
     private final double angularToPositionalConversionConstant = 1 / 360.0 * (Math.PI * 4);
@@ -33,9 +34,9 @@ public class PoseTrackingEncoderWheelSystem
                 centerWheelPosition = centerWheel.getTotalAngularOffset() * angularToPositionalConversionConstant,
                 rightWheelPosition = rightWheel.getTotalAngularOffset() * angularToPositionalConversionConstant;
 
-        double leftWheelDelta = leftWheelPosition - leftWheelPrevious,
-                centerWheelDelta = centerWheelPosition - centerWheelPrevious,
-                rightWheelDelta = rightWheelPosition - rightWheelPrevious;
+        leftWheelDelta = leftWheelPosition - leftWheelPrevious;
+        centerWheelDelta = centerWheelPosition - centerWheelPrevious;
+        rightWheelDelta = rightWheelPosition - rightWheelPrevious;
 
         leftWheelPrevious = leftWheelPosition;
         centerWheelPrevious = centerWheelPosition;
@@ -63,6 +64,11 @@ public class PoseTrackingEncoderWheelSystem
                 "Left wheel is: " + leftWheel.getTotalAngularOffset(),
                 "Center wheel is: " + centerWheel.getTotalAngularOffset(),
                 "Right wheel is: " + rightWheel.getTotalAngularOffset(),
+                "~~~~~~~~~",
+                "Left wheel delta is: " + leftWheelDelta,
+                "Center wheel delta is: " + centerWheelDelta,
+                "Right wheel delta is: " + rightWheelDelta,
+                "~~~~~~~~~",
                 "Pose is : " + getCurrentPose().toString()};
     }
 }
