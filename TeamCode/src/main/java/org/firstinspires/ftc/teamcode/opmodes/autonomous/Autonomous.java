@@ -47,5 +47,17 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
         }
 
         robot.ptews.provideExternalPoseInformation(new Pose(Pose.PoseType.ABSOLUTE, balancePlateOffset, currentHeading));
+
+        while (!isStarted())
+            flow.yield();
+
+        // TODO jewel knock
+
+        robot.drivetrain.matchPose(
+                robot.ptews,
+                new Pose(Pose.PoseType.RELATIVE, new CartesianVector(0, 36), new DegreeAngle(0)),
+                5,
+                new DegreeAngle(10),
+                null);
     }
 }

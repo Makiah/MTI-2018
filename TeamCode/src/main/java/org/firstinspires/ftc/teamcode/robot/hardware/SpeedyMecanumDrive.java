@@ -103,6 +103,8 @@ public class SpeedyMecanumDrive
         if (desiredPose.poseType == Pose.PoseType.RELATIVE)
             desiredPose = new Pose(Pose.PoseType.ABSOLUTE, ptews.getCurrentPose().position.add(desiredPose.position), ptews.getCurrentPose().heading.add(desiredPose.heading));
 
+        double originalTargetOffset = Double.NaN;
+
         while (true)
         {
             ptews.update();
@@ -110,12 +112,17 @@ public class SpeedyMecanumDrive
             Pose currentPose = ptews.getCurrentPose();
 
             Vector positionalOffsetFromTarget = desiredPose.position.subtract(currentPose.position);
+            if (Double.isNaN(originalTargetOffset))
+                originalTargetOffset = positionalOffsetFromTarget.magnitude();
             double headingDegreeOffsetFromTarget = currentPose.heading.quickestDegreeMovementTo(desiredPose.heading);
 
             if (positionalOffsetFromTarget.magnitude() <= minimumInchesFromTarget && Math.abs(headingDegreeOffsetFromTarget) <= minimumHeadingFromTarget.degrees())
                 break;
 
             move(positionalOffsetFromTarget.divide(5), headingDegreeOffsetFromTarget / 5);
+
+            if (completionBasedFunction != null)
+                completionBasedFunction.value((1.0 - positionalOffsetFromTarget.magnitude()) / originalTargetOffset);
         }
 
         move(null, 0);
