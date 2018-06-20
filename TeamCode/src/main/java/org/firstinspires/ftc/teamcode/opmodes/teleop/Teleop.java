@@ -9,6 +9,7 @@ import hankutanku.EnhancedOpMode;
 import hankutanku.input.HTButton;
 import hankutanku.input.HTGamepad;
 import hankutanku.math.angle.DegreeAngle;
+import hankutanku.math.vector.Vector;
 
 @TeleOp(name="Teleop", group= OpModeDisplayGroups.FINAL_BOT_OPMODES)
 public class Teleop extends EnhancedOpMode
@@ -26,15 +27,19 @@ public class Teleop extends EnhancedOpMode
 
         robot.jewelKnocker.getOuttaTheWay();
 
+        boolean inFieldCentricMode = true;
+
         while (true)
         {
             HTGamepad.CONTROLLER1.update();
             // HTGamepad.CONTROLLER2.update(); (not currently in use)
 
+            // Flipper
             if (HTGamepad.CONTROLLER1.x.currentState == HTButton.ButtonState.JUST_TAPPED)
                 robot.flipper.attemptFlipperStateIncrement();
             robot.flipper.updateFlipperState();
 
+            // Lift
             if (gamepad1.right_bumper)
                 robot.lift.setPower(1);
             else if (gamepad1.left_bumper)
@@ -42,6 +47,7 @@ public class Teleop extends EnhancedOpMode
             else
                 robot.lift.setPower(0);
 
+            // Relic Arm
             if (gamepad1.dpad_left)
                 robot.relic.setPower(1);
             else if (gamepad1.dpad_right)
@@ -49,17 +55,40 @@ public class Teleop extends EnhancedOpMode
             else
                 robot.relic.setPower(0);
 
+            // Field Centric Toggle/Reset
+            if (HTGamepad.CONTROLLER1.a.currentState == HTButton.ButtonState.JUST_TAPPED)
+            {
+                inFieldCentricMode = !inFieldCentricMode;
+
+                if (inFieldCentricMode)
+                    robot.ptews.reset();
+            }
+
+            Vector driveVector = HTGamepad.CONTROLLER1.leftJoystick();
+            double turnSpeed = HTGamepad.CONTROLLER1.gamepad.right_stick_x;
+
+            if (inFieldCentricMode)
+            {
+                robot.ptews.update();
+
+                driveVector.rotateBy(robot.ptews.getCurrentPose().heading.negative());
+
+                if (HTGamepad.CONTROLLER1.x.currentState == HTButton.ButtonState.JUST_TAPPED)
+                    robot.ptews.reset();
+            }
+
+            // Two different modes: intake and deposit.  The deposit mode results in the trigger being used to slow down the robot.
             if (robot.flipper.canIntakeGlyphs())
             {
                 robot.harvester.run((gamepad1.left_trigger - gamepad1.right_trigger) * .7);
-                robot.drivetrain.move(HTGamepad.CONTROLLER1.leftJoystick(), HTGamepad.CONTROLLER1.gamepad.right_stick_x);
+                robot.drivetrain.move(driveVector, turnSpeed);
             }
             else
             {
                 robot.harvester.run(0);
 
                 double powerReductionFactor = (3 * gamepad1.left_trigger + 1);
-                robot.drivetrain.move(HTGamepad.CONTROLLER1.leftJoystick().divide(powerReductionFactor), HTGamepad.CONTROLLER1.gamepad.right_stick_x / powerReductionFactor);
+                robot.drivetrain.move(driveVector.divide(powerReductionFactor), turnSpeed / powerReductionFactor);
             }
 
             flow.yield();

@@ -126,7 +126,7 @@ public class SpeedyMecanumDrive
             if (positionalOffsetFromTarget.magnitude() <= minimumInchesFromTarget && Math.abs(headingDegreeOffsetFromTarget) <= minimumHeadingFromTarget.degrees())
                 break;
 
-            move(positionalOffsetFromTarget.divide(50), headingDegreeOffsetFromTarget / 50);
+            move(positionalOffsetFromTarget.rotateBy(currentPose.heading.negative()).divide(50), headingDegreeOffsetFromTarget / 50);
 
             if (completionBasedFunction != null)
                 completionBasedFunction.value((1.0 - positionalOffsetFromTarget.magnitude()) / originalTargetOffset);

@@ -11,14 +11,10 @@ import hankutanku.math.vector.Vector;
 
 public class PoseTrackingEncoderWheelSystem
 {
-    private final Angle headingChangeRequiredForPoseUpdate = new DegreeAngle(2); // If we keep track of every shift in noise then the data starts to drift.
-
     private final AbsoluteEncoder leftWheel, centerWheel, rightWheel; // These COULD be incremental, but we'd just be recalculating stuff.
     private Pose currentPose = new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(0, 0), new DegreeAngle(0)); // Reference changes over time.
 
-    private Angle leftWheelCurrent = new DegreeAngle(0), centerWheelCurrent = new DegreeAngle(0), rightWheelCurrent = new DegreeAngle(0);
-    private Angle leftWheelPrevious = new DegreeAngle(0), centerWheelPrevious = new DegreeAngle(0), rightWheelPrevious = new DegreeAngle(0);
-    private double leftWheelDelta = 0.0, centerWheelDelta = 0.0, rightWheelDelta = 0.0;
+    private Angle leftWheelPrevious, centerWheelPrevious, rightWheelPrevious;
     private double leftWheelCumulative = 0.0, rightWheelCumulative = 0.0, headingDegreeOffset = 0.0;
 
     private final double robotSpinCircumference = 13.4 * Math.PI; // width from left to right tracker.
@@ -40,6 +36,17 @@ public class PoseTrackingEncoderWheelSystem
         console = LoggingBase.instance.newProcessConsole("PTEWS");
     }
 
+    public void reset()
+    {
+        leftWheelPrevious = leftWheel.heading();
+        centerWheelPrevious = centerWheel.heading();
+        rightWheelPrevious = rightWheel.heading();
+
+        leftWheelCumulative = 0.0;
+        rightWheelCumulative = 0.0;
+        headingDegreeOffset = 0.0;
+    }
+
     public void provideExternalPoseInformation(Pose info)
     {
         if (info.poseType == Pose.PoseType.ABSOLUTE)
@@ -56,13 +63,13 @@ public class PoseTrackingEncoderWheelSystem
 
     public void update()
     {
-        leftWheelCurrent = leftWheel.heading();
-        centerWheelCurrent = centerWheel.heading();
-        rightWheelCurrent = rightWheel.heading();
+        Angle leftWheelCurrent = leftWheel.heading(),
+                centerWheelCurrent = centerWheel.heading(),
+                rightWheelCurrent = rightWheel.heading();
 
-        leftWheelDelta = leftWheelPrevious.quickestDegreeMovementTo(leftWheelCurrent) * angularToPositionalConversionConstant;
-        centerWheelDelta = centerWheelPrevious.quickestDegreeMovementTo(centerWheelCurrent) * angularToPositionalConversionConstant;
-        rightWheelDelta = rightWheelPrevious.quickestDegreeMovementTo(rightWheelCurrent) * angularToPositionalConversionConstant;
+        double leftWheelDelta = leftWheelPrevious.quickestDegreeMovementTo(leftWheelCurrent) * angularToPositionalConversionConstant,
+                centerWheelDelta = centerWheelPrevious.quickestDegreeMovementTo(centerWheelCurrent) * angularToPositionalConversionConstant,
+                rightWheelDelta = rightWheelPrevious.quickestDegreeMovementTo(rightWheelCurrent) * angularToPositionalConversionConstant;
 
         leftWheelPrevious = leftWheelCurrent;
         centerWheelPrevious = centerWheelCurrent;

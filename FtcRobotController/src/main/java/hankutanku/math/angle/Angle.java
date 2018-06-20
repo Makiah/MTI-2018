@@ -21,6 +21,22 @@ public abstract class Angle
         return new RadianAngle(this.radians() - other.radians());
     }
 
+    public Angle opposing()
+    {
+        if (this instanceof DegreeAngle)
+            return new DegreeAngle(180 + degrees());
+        else
+            return new RadianAngle(Math.PI + radians());
+    }
+
+    public Angle negative()
+    {
+        if (this instanceof DegreeAngle)
+            return new DegreeAngle(-degrees());
+        else
+            return new RadianAngle(-radians());
+    }
+
     public double quickestDegreeMovementTo(Angle other)
     {
         double diff = (other.degrees() - degrees() + 180) % 360 - 180;
