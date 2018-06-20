@@ -17,7 +17,7 @@ public class PoseTrackingEncoderWheelSystem
     private Angle leftWheelPrevious, centerWheelPrevious, rightWheelPrevious;
     private double leftWheelCumulative = 0.0, rightWheelCumulative = 0.0, headingDegreeOffset = 0.0;
 
-    private final double robotSpinCircumference = 13.4 * Math.PI; // width from left to right tracker.
+    private final double robotSpinCircumference = 13.27 * Math.PI; // width from left to right tracker.
     private final double angularToPositionalConversionConstant = 1 / 360.0 * (Math.PI * 4);
 
     private final ProcessConsole console;

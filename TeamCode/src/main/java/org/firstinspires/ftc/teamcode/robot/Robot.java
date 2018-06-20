@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -56,6 +57,7 @@ public class Robot
         jewelKnocker = new JewelKnocker(
                 initializer.initialize(Servo.class, "servo4"),
                 initializer.initialize(Servo.class, "servo5"),
+                initializer.initialize(ColorSensor.class, "jewel sensor"),
                 autoOrTeleop
         );
 

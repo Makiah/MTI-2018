@@ -46,9 +46,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
         Robot robot = new Robot(hardware, AutoOrTeleop.AUTONOMOUS);
 
         // Vision
-        OpenCVCam openCVCam = new OpenCVCam();
         VuforiaCam vuforiaCam = new VuforiaCam();
-        JewelDetector jewelDetector = new JewelDetector();
 
         // Set physical balance plate offset.
         Vector balancePlateOffset = new CartesianVector(24, 24); // starts at blue bottom
@@ -126,7 +124,12 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
         // endregion
 
-        // TODO jewel sequence
+        robot.jewelKnocker.knockJewel(getAlliance() == Alliance.BLUE, flow);
+
+        if (true) {
+            while (true)
+                flow.yield();
+        }
 
         robot.drivetrain.matchPose(
                 robot.ptews,

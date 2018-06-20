@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.OpModeDisplayGroups;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
+import dude.makiah.androidlib.logging.ProcessConsole;
 import hankutanku.EnhancedOpMode;
 import hankutanku.input.HTButton;
 import hankutanku.input.HTGamepad;
@@ -28,6 +29,8 @@ public class Teleop extends EnhancedOpMode
         robot.jewelKnocker.getOuttaTheWay();
 
         boolean inFieldCentricMode = true;
+
+        ProcessConsole console = log.newProcessConsole("Teleop");
 
         while (true)
         {
@@ -71,9 +74,9 @@ public class Teleop extends EnhancedOpMode
             {
                 robot.ptews.update();
 
-                driveVector.rotateBy(robot.ptews.getCurrentPose().heading.negative());
+                driveVector = driveVector.rotateBy(robot.ptews.getCurrentPose().heading.negative());
 
-                if (HTGamepad.CONTROLLER1.x.currentState == HTButton.ButtonState.JUST_TAPPED)
+                if (HTGamepad.CONTROLLER1.y.currentState == HTButton.ButtonState.JUST_TAPPED)
                     robot.ptews.reset();
             }
 
@@ -90,6 +93,8 @@ public class Teleop extends EnhancedOpMode
                 double powerReductionFactor = (3 * gamepad1.left_trigger + 1);
                 robot.drivetrain.move(driveVector.divide(powerReductionFactor), turnSpeed / powerReductionFactor);
             }
+
+            console.write("In " + (inFieldCentricMode ? "field" : "robot") + " centric mode");
 
             flow.yield();
         }
