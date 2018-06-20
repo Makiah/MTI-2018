@@ -7,8 +7,8 @@ public class ClampingFlipper
     private final Servo leftFlipper, rightFlipper, lowerClamp, upperClamp;
     private final double rightFlipperPush = .85, rightFlipperUp = .7, rightFlipperDown = .15;
     private final double leftFlipperPush = .15, leftFlipperUp = .3, leftFlipperDown = .85; // YOU CAN'T SET THEM TO 0 OR 1
-    private final double lowerClampRelease = .18, lowerClampClamp = .31;
-    private final double upperClampRelease = .43, upperClampClamp = .57;
+    private final double lowerClampRelease = .21, lowerClampClamp = .35;
+    private final double upperClampRelease = .39, upperClampClamp = .57;
 
     public ClampingFlipper(Servo leftFlipper, Servo rightFlipper, Servo lowerClamp, Servo upperClamp)
     {

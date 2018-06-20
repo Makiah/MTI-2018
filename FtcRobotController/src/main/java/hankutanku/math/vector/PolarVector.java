@@ -30,7 +30,7 @@ public class PolarVector extends Vector
     @Override public double x()
     {
         if (Double.isNaN(x))
-            x = magnitude * Math.cos(Math.toRadians(angle.radians()));
+            x = magnitude * Math.cos(angle.radians());
 
         return x;
     }
@@ -40,7 +40,7 @@ public class PolarVector extends Vector
     @Override public double y()
     {
         if (Double.isNaN(y))
-            y = magnitude * Math.sin(Math.toRadians(angle.radians()));
+            y = magnitude * Math.sin(angle.radians());
 
         return y;
     }

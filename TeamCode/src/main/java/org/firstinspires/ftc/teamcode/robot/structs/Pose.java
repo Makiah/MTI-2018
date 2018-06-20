@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.structs;
 
+import java.text.DecimalFormat;
+
 import hankutanku.math.angle.Angle;
 import hankutanku.math.vector.Vector;
 
@@ -8,6 +10,8 @@ import hankutanku.math.vector.Vector;
  */
 public class Pose
 {
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
     public enum PoseType { ABSOLUTE, RELATIVE }
 
     public final PoseType poseType;
@@ -45,6 +49,6 @@ public class Pose
 
     public String toString()
     {
-        return "Position is " + position.toString(false) + " and robot facing heading " + heading.degrees();
+        return "position " + position.toString(false) + ", heading " + decimalFormat.format(heading.degrees());
     }
 }

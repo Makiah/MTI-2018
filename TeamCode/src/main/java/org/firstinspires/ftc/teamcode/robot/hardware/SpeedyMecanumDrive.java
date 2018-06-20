@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.robot.structs.Pose;
 
 import dude.makiah.androidlib.logging.LoggingBase;
 import dude.makiah.androidlib.logging.ProcessConsole;
+import dude.makiah.androidlib.threading.Flow;
 import hankutanku.math.angle.Angle;
 import hankutanku.math.angle.DegreeAngle;
 import hankutanku.math.function.Function;
@@ -34,6 +35,9 @@ public class SpeedyMecanumDrive
     public SpeedyMecanumDrive(DcMotor frontLeft, DcMotor backLeft, DcMotor backRight, DcMotor frontRight)
     {
         this.driveMotors = new DcMotor[]{frontLeft, backLeft, backRight, frontRight};
+
+        for (DcMotor driveMotor : driveMotors)
+            driveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // avoid braking motors for durability.
 
         this.drivePowerConsole = LoggingBase.instance.newProcessConsole("Mecanum Drive");
     }
@@ -84,8 +88,8 @@ public class SpeedyMecanumDrive
                 "Back Left: " + drivePowers[1],
                 "Back Right: " + drivePowers[2],
                 "Front Right: " + drivePowers[3],
-                "Driving Angle: " + (driveVector != null ? driveVector.angle().degrees() : " N/A"),
-                "Turn " + turnSpeed
+                "Drive Vector: : " + (driveVector != null ? driveVector.toString() : "NA"),
+                "Turn: " + turnSpeed
         );
     }
 
@@ -97,11 +101,14 @@ public class SpeedyMecanumDrive
      * @param minimumHeadingFromTarget  The maximum angle from the target pose which enables the robot to stop this code block.
      * @param completionBasedFunction  A function which returns void and receives a 0-1 input representing how close we are from execution completion.
      */
-    public void matchPose(PoseTrackingEncoderWheelSystem ptews, Pose desiredPose, double minimumInchesFromTarget, Angle minimumHeadingFromTarget, Function<Void, Double> completionBasedFunction)
+    public void matchPose(PoseTrackingEncoderWheelSystem ptews, Pose desiredPose, double minimumInchesFromTarget, Angle minimumHeadingFromTarget, Function<Void, Double> completionBasedFunction, Flow flow) throws InterruptedException
     {
         // Relative means relative to the current robot pose.
         if (desiredPose.poseType == Pose.PoseType.RELATIVE)
+        {
             desiredPose = new Pose(Pose.PoseType.ABSOLUTE, ptews.getCurrentPose().position.add(desiredPose.position), ptews.getCurrentPose().heading.add(desiredPose.heading));
+            LoggingBase.instance.lines("Navigating to pose " + desiredPose.toString());
+        }
 
         double originalTargetOffset = Double.NaN;
 
@@ -114,17 +121,21 @@ public class SpeedyMecanumDrive
             Vector positionalOffsetFromTarget = desiredPose.position.subtract(currentPose.position);
             if (Double.isNaN(originalTargetOffset))
                 originalTargetOffset = positionalOffsetFromTarget.magnitude();
-            double headingDegreeOffsetFromTarget = currentPose.heading.quickestDegreeMovementTo(desiredPose.heading);
+            double headingDegreeOffsetFromTarget = desiredPose.heading.quickestDegreeMovementTo(currentPose.heading);
 
             if (positionalOffsetFromTarget.magnitude() <= minimumInchesFromTarget && Math.abs(headingDegreeOffsetFromTarget) <= minimumHeadingFromTarget.degrees())
                 break;
 
-            move(positionalOffsetFromTarget.divide(5), headingDegreeOffsetFromTarget / 5);
+            move(positionalOffsetFromTarget.divide(50), headingDegreeOffsetFromTarget / 50);
 
             if (completionBasedFunction != null)
                 completionBasedFunction.value((1.0 - positionalOffsetFromTarget.magnitude()) / originalTargetOffset);
+
+            flow.yield();
         }
 
         move(null, 0);
+
+        flow.yield();
     }
 }

@@ -8,11 +8,14 @@ import org.firstinspires.ftc.teamcode.robot.hardware.AbsoluteEncoder;
 import org.firstinspires.ftc.teamcode.robot.hardware.IncrementalAbsoluteEncoder;
 import org.firstinspires.ftc.teamcode.robot.hardware.PoseTrackingEncoderWheelSystem;
 
+import dude.makiah.androidlib.logging.ProcessConsole;
+import hankutanku.EnhancedOpMode;
+
 @Autonomous(name="Test Pose Tracking", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
-public class TestPositionTracking extends LinearOpMode
+public class TestPositionTracking extends EnhancedOpMode
 {
     @Override
-    public void runOpMode()
+    protected void onRun() throws InterruptedException
     {
         PoseTrackingEncoderWheelSystem ptews = new PoseTrackingEncoderWheelSystem(
                 new AbsoluteEncoder(hardwareMap.analogInput.get("left tracking wheel")),
@@ -20,14 +23,13 @@ public class TestPositionTracking extends LinearOpMode
                 new AbsoluteEncoder(hardwareMap.analogInput.get("right tracking wheel"))
         );
 
-        while (!isStopRequested())
+        ProcessConsole console = log.newProcessConsole("Tracking Pose...");
+
+        while (true)
         {
             ptews.update();
-            for (String line : ptews.getTrackingSummary())
-                telemetry.addLine(line);
-            telemetry.update();
 
-            idle();
+            flow.yield();
         }
     }
 }

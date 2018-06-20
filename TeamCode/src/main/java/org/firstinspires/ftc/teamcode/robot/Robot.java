@@ -7,9 +7,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.robot.hardware.AbsoluteEncoder;
 import org.firstinspires.ftc.teamcode.robot.hardware.ClampingFlipper;
 import org.firstinspires.ftc.teamcode.robot.hardware.Harvester;
+import org.firstinspires.ftc.teamcode.robot.hardware.JewelKnocker;
 import org.firstinspires.ftc.teamcode.robot.hardware.PoseTrackingEncoderWheelSystem;
 import org.firstinspires.ftc.teamcode.robot.hardware.SpeedyMecanumDrive;
 
+import hankutanku.EnhancedOpMode;
 import hankutanku.hardware.HardwareInitializer;
 
 /**
@@ -23,8 +25,9 @@ public class Robot
     public final Harvester harvester;
     public final DcMotor relic;
     public final PoseTrackingEncoderWheelSystem ptews;
+    public final JewelKnocker jewelKnocker;
 
-    public Robot(HardwareInitializer initializer)
+    public Robot(HardwareInitializer initializer, EnhancedOpMode.AutoOrTeleop autoOrTeleop)
     {
         drivetrain = new SpeedyMecanumDrive(
                 initializer.initialize(DcMotor.class, "front left"),
@@ -41,6 +44,7 @@ public class Robot
         );
 
         lift = initializer.initialize(DcMotor.class, "lift");
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         harvester = new Harvester(
                 initializer.initialize(DcMotor.class, "left harvester"),
@@ -49,7 +53,11 @@ public class Robot
 
         relic = initializer.initialize(DcMotor.class, "relic");
 
-        initializer.initialize(Servo.class, "servo4").setPosition(0); // jewel knocker (temporary).
+        jewelKnocker = new JewelKnocker(
+                initializer.initialize(Servo.class, "servo4"),
+                initializer.initialize(Servo.class, "servo5"),
+                autoOrTeleop
+        );
 
         ptews = new PoseTrackingEncoderWheelSystem(
                 new AbsoluteEncoder(initializer.initialize(AnalogInput.class, "left tracking wheel")),

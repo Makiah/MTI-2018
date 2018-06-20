@@ -19,17 +19,17 @@ public class Teleop extends EnhancedOpMode
     @Override
     protected final void onRun() throws InterruptedException
     {
-        Robot robot = new Robot(hardware);
+        Robot robot = new Robot(hardware, AutoOrTeleop.TELEOP);
 
         while (!isStarted())
             flow.yield();
+
+        robot.jewelKnocker.getOuttaTheWay();
 
         while (true)
         {
             HTGamepad.CONTROLLER1.update();
             // HTGamepad.CONTROLLER2.update(); (not currently in use)
-
-            robot.drivetrain.move(HTGamepad.CONTROLLER1.leftJoystick(), HTGamepad.CONTROLLER1.gamepad.right_stick_x);
 
             if (HTGamepad.CONTROLLER1.x.currentState == HTButton.ButtonState.JUST_TAPPED)
                 robot.flipper.attemptFlipperStateIncrement();
@@ -50,9 +50,17 @@ public class Teleop extends EnhancedOpMode
                 robot.relic.setPower(0);
 
             if (robot.flipper.canIntakeGlyphs())
-                robot.harvester.run(gamepad1.left_trigger - gamepad1.right_trigger);
+            {
+                robot.harvester.run((gamepad1.left_trigger - gamepad1.right_trigger) * .7);
+                robot.drivetrain.move(HTGamepad.CONTROLLER1.leftJoystick(), HTGamepad.CONTROLLER1.gamepad.right_stick_x);
+            }
             else
+            {
                 robot.harvester.run(0);
+
+                double powerReductionFactor = (3 * gamepad1.left_trigger + 1);
+                robot.drivetrain.move(HTGamepad.CONTROLLER1.leftJoystick().divide(powerReductionFactor), HTGamepad.CONTROLLER1.gamepad.right_stick_x / powerReductionFactor);
+            }
 
             flow.yield();
         }

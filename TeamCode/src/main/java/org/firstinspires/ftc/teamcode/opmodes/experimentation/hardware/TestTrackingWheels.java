@@ -21,6 +21,8 @@ public class TestTrackingWheels extends LinearOpMode
                 centerWheel = new AbsoluteEncoder(hardwareMap.analogInput.get("center tracking wheel")),
                 rightWheel = new AbsoluteEncoder(hardwareMap.analogInput.get("right tracking wheel"));
 
+        leftWheel.setDirection(AbsoluteEncoder.Direction.REVERSE);
+
         IncrementalAbsoluteEncoder leftIncremental = new IncrementalAbsoluteEncoder(leftWheel),
                 centerIncremental = new IncrementalAbsoluteEncoder(centerWheel),
                 rightIncremental = new IncrementalAbsoluteEncoder(rightWheel);
