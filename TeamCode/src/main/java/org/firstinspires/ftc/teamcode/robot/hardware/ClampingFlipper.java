@@ -33,6 +33,11 @@ public class ClampingFlipper
         transitionEnd = System.currentTimeMillis() + transitionLength;
     }
 
+    public boolean isMidStateTransition()
+    {
+        return midStateTransition;
+    }
+
     public void attemptFlipperStateIncrement()
     {
         if (midStateTransition)

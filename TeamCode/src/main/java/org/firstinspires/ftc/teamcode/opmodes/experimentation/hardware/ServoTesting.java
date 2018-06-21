@@ -39,7 +39,11 @@ public class ServoTesting extends LinearOpMode
 
         while (!isStopRequested())
         {
-            if (current >= numServos) current = 0;
+            if (current >= numServos)
+                current = 0;
+
+            if (current < 0)
+                current = numServos - 1;
 
             if (gamepad1.dpad_up)
                 currentPos += .001;
@@ -54,9 +58,16 @@ public class ServoTesting extends LinearOpMode
             telemetry.addLine("Servo: " + current);
             telemetry.update();
 
-            if (gamepad1.a)
+            if (gamepad1.y)
             {
                 current++;
+                currentPos = 0;
+                sleep(500);
+            }
+
+            if (gamepad1.x)
+            {
+                current--;
                 currentPos = 0;
                 sleep(500);
             }

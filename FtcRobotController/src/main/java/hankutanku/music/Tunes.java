@@ -22,9 +22,7 @@ public class Tunes
         USSR_Anthem (R.raw.ussranthem),
         LEFT_COL (R.raw.leftcol),
         CENTER_COL (R.raw.centercol),
-        RIGHT_COL(R.raw.rightcol),
-        LEFT_RIGHT_JEWEL(R.raw.centercol), // TODO add correct resource address, have to recreate MP3 since can't find in git history.
-        RIGHT_LEFT_JEWEL(R.raw.centercol);
+        RIGHT_COL(R.raw.rightcol);
 
         public final int resourceAddress;
         Option(int resourceAddress)

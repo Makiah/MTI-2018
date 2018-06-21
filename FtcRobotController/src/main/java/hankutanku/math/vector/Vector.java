@@ -99,7 +99,7 @@ public abstract class Vector
     }
 
     // How we'll output the vector string.
-    private static final DecimalFormat decimalFormat = new DecimalFormat("#.00");
+    public static final DecimalFormat decimalFormat = new DecimalFormat("#.00");
 
     public String toString()
     {
@@ -108,7 +108,7 @@ public abstract class Vector
     public String toString(boolean usePolarFormat)
     {
         if (usePolarFormat)
-            return "<" + decimalFormat.format(magnitude()) + ", " + decimalFormat.format(angle().degrees()) + ">";
+            return "<" + decimalFormat.format(magnitude()) + ", " + decimalFormat.format(angle().degrees()) + " degrees>";
         else
             return "<" + decimalFormat.format(x()) + ", " + decimalFormat.format(y()) + ">";
     }

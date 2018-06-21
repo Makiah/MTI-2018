@@ -50,16 +50,16 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
         // Set physical balance plate offset.
         Vector balancePlateOffset = new CartesianVector(24, 24); // starts at blue bottom
-        Angle currentHeading = new DegreeAngle(270);
+        Angle currentHeading = new DegreeAngle(0);
         if (getBalancePlate() == BalancePlate.TOP)
             balancePlateOffset.add(new CartesianVector(0, 72));
         if (getAlliance() == Alliance.RED)
         {
             balancePlateOffset.add(new CartesianVector(96, 0));
-            currentHeading = new DegreeAngle(90);
+            currentHeading = new DegreeAngle(180);
         }
         log.lines("Starting position is " + balancePlateOffset.toString(false));
-
+        
         robot.ptews.provideExternalPoseInformation(new Pose(Pose.PoseType.ABSOLUTE, balancePlateOffset, currentHeading));
 
 
@@ -126,17 +126,69 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
         robot.jewelKnocker.knockJewel(getAlliance() == Alliance.BLUE, flow);
 
-        if (true) {
-            while (true)
-                flow.yield();
+        // Steady timed drive (manual) off the balance board.
+        robot.drivetrain.move(new CartesianVector(0, .25), 0);
+
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < 1000)
+        {
+            robot.ptews.update();
+            flow.yield();
+        }
+        robot.drivetrain.move(null, 0);
+
+        flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 5));
+
+        if (getBalancePlate() == BalancePlate.BOTTOM)
+        {
+            robot.flipper.attemptFlipperStateIncrement();
+            while (robot.flipper.isMidStateTransition())
+                robot.flipper.updateFlipperState();
+
+            // Figure out the vector displacement to the correct deposit column (absolute)
+            Vector depositVector = null;
+            Angle depositAngle = null;
+
+            switch (vumark) {
+                case LEFT:
+                    depositVector = new CartesianVector(4, 52); // offset by 4 from the 3rd tile beginning
+                    break;
+
+                case CENTER:
+                    depositVector = new CartesianVector(4, 60);
+                    break;
+
+                case RIGHT:
+                    depositVector = new CartesianVector(4, 68); // offset by -4 from the 3rd tile end
+                    break;
+            }
+
+            switch (getAlliance())
+            {
+                case RED:
+                    depositAngle = new DegreeAngle(90);
+                    break;
+
+                case BLUE:
+                    depositAngle = new DegreeAngle(270);
+                    break;
+            }
+
+            robot.drivetrain.matchPose(
+                    "Deposit at Cryptobox",
+                    robot.ptews,
+                    new Pose(Pose.PoseType.ABSOLUTE, depositVector, depositAngle),
+                    2,
+                    new DegreeAngle(6),
+                    null,
+                    flow);
+
+            robot.flipper.attemptFlipperStateIncrement();
+            while (robot.flipper.isMidStateTransition())
+                robot.flipper.updateFlipperState();
         }
 
-        robot.drivetrain.matchPose(
-                robot.ptews,
-                new Pose(Pose.PoseType.RELATIVE, new CartesianVector(0, 36), new DegreeAngle(0)),
-                5,
-                new DegreeAngle(10),
-                null,
-                flow);
+        while (true)
+            flow.yield();
     }
 }

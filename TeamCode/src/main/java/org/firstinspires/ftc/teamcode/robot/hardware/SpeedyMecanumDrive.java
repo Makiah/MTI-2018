@@ -101,13 +101,14 @@ public class SpeedyMecanumDrive
      * @param minimumHeadingFromTarget  The maximum angle from the target pose which enables the robot to stop this code block.
      * @param completionBasedFunction  A function which returns void and receives a 0-1 input representing how close we are from execution completion.
      */
-    public void matchPose(PoseTrackingEncoderWheelSystem ptews, Pose desiredPose, double minimumInchesFromTarget, Angle minimumHeadingFromTarget, Function<Void, Double> completionBasedFunction, Flow flow) throws InterruptedException
+    public void matchPose(String movementName, PoseTrackingEncoderWheelSystem ptews, Pose desiredPose, double minimumInchesFromTarget, Angle minimumHeadingFromTarget, Function<Void, Double> completionBasedFunction, Flow flow) throws InterruptedException
     {
+        ProcessConsole console = LoggingBase.instance.newProcessConsole("Matching Pose");
+
         // Relative means relative to the current robot pose.
         if (desiredPose.poseType == Pose.PoseType.RELATIVE)
         {
             desiredPose = new Pose(Pose.PoseType.ABSOLUTE, ptews.getCurrentPose().position.add(desiredPose.position), ptews.getCurrentPose().heading.add(desiredPose.heading));
-            LoggingBase.instance.lines("Navigating to pose " + desiredPose.toString());
         }
 
         double originalTargetOffset = Double.NaN;
@@ -126,10 +127,16 @@ public class SpeedyMecanumDrive
             if (positionalOffsetFromTarget.magnitude() <= minimumInchesFromTarget && Math.abs(headingDegreeOffsetFromTarget) <= minimumHeadingFromTarget.degrees())
                 break;
 
-            move(positionalOffsetFromTarget.rotateBy(currentPose.heading.negative()).divide(50), headingDegreeOffsetFromTarget / 50);
+            move(positionalOffsetFromTarget.rotateBy(currentPose.heading.negative()).divide(50), headingDegreeOffsetFromTarget / 70);
 
             if (completionBasedFunction != null)
                 completionBasedFunction.value((1.0 - positionalOffsetFromTarget.magnitude()) / originalTargetOffset);
+
+            console.write(
+                    movementName,
+                    "Target pose is " + desiredPose.toString(),
+                    "Positional offset is " + positionalOffsetFromTarget.toString(false),
+                    "Heading offset is " + Vector.decimalFormat.format(headingDegreeOffsetFromTarget));
 
             flow.yield();
         }

@@ -26,8 +26,6 @@ public class Teleop extends EnhancedOpMode
         while (!isStarted())
             flow.yield();
 
-        robot.jewelKnocker.getOuttaTheWay();
-
         boolean inFieldCentricMode = true;
 
         ProcessConsole console = log.newProcessConsole("Teleop");
