@@ -5,6 +5,14 @@ public abstract class Angle
     public abstract double degrees();
     public abstract double radians();
 
+    public static Angle average(Angle... angles)
+    {
+        double cumulativeDegrees = 0.0;
+        for (Angle angle : angles)
+            cumulativeDegrees += angle.degrees();
+        return new DegreeAngle(cumulativeDegrees / angles.length);
+    }
+
     public Angle add(Angle other)
     {
         if (other instanceof DegreeAngle && this instanceof DegreeAngle)

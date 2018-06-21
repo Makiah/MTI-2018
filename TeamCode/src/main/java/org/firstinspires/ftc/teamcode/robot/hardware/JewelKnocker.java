@@ -12,8 +12,8 @@ public class JewelKnocker
 {
     private final Servo extender, knocker;
     private final ColorSensor colorSensor;
-    private final double extenderIn = .46, extenderSemiOut = .52, extenderOut = .68, extenderHelpKnock = .71;
-    private final double knockerLeft = 0, knockerMiddle = .28, knockerMiddleCheck = .335, knockerRight = .597, knockerIn = 1;
+    private final double extenderIn = .46, extenderOut = .68, extenderHelpKnock = .03;
+    private final double knockerLeft = 0, knockerMiddle = .335, knockerRight = .597, knockerIn = 1;
 
     public JewelKnocker(Servo extender, Servo knocker, ColorSensor jewelSensor, EnhancedOpMode.AutoOrTeleop autoOrTeleop)
     {
@@ -35,20 +35,33 @@ public class JewelKnocker
 
     public void knockJewel(boolean knockRedJewel, Flow flow) throws InterruptedException
     {
-        this.knocker.setPosition(knockerRight);
-        this.extender.setPosition(extenderSemiOut);
-        flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 300));
+        final TimeMeasure jewelKnockPrepTime = new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 1000);
+        long start = System.currentTimeMillis();
+        double completion = 0;
+        while (true)
+        {
+            completion = (System.currentTimeMillis() - start) / jewelKnockPrepTime.durationIn(TimeMeasure.Units.MILLISECONDS);
 
-        this.knocker.setPosition(knockerMiddle);
-        this.extender.setPosition(extenderOut);
-        flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 1500));
+            if (completion >= 1)
+            {
+                extender.setPosition(extenderOut);
+                knocker.setPosition(knockerMiddle);
+                break;
+            }
 
-        this.knocker.setPosition(knockerMiddleCheck);
-        flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 100));
+            // Cube root to cause more gradual movement towards target position near endpoints.
+            double x = Math.pow(completion, 1.0/3);
+
+            extender.setPosition(extenderIn + (extenderOut - extenderIn) * x);
+            knocker.setPosition(knockerIn + (knockerMiddle - knockerIn) * x);
+
+            flow.yield();
+        }
 
         boolean isJewelRed = isJewelRed();
-        boolean knockingRight = isJewelRed && knockRedJewel;
+        boolean knockingRight = isJewelRed() && knockRedJewel;
         this.knocker.setPosition(knockingRight ? knockerRight : knockerLeft);
+        this.extender.setPosition(extenderOut + (knockingRight ? extenderHelpKnock : -extenderHelpKnock));
         if (knockingRight)
             this.extender.setPosition(extenderHelpKnock);
         LoggingBase.instance.lines("Red is " + lastRed + " so jewel is " + (isJewelRed ? "red" : "blue"));
@@ -56,6 +69,5 @@ public class JewelKnocker
 
         this.extender.setPosition(extenderIn);
         this.knocker.setPosition(knockerIn);
-        flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 500));
     }
 }

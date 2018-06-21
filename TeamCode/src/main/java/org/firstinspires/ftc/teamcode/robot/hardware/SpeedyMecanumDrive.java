@@ -101,7 +101,13 @@ public class SpeedyMecanumDrive
      * @param minimumHeadingFromTarget  The maximum angle from the target pose which enables the robot to stop this code block.
      * @param completionBasedFunction  A function which returns void and receives a 0-1 input representing how close we are from execution completion.
      */
-    public void matchPose(String movementName, PoseTrackingEncoderWheelSystem ptews, Pose desiredPose, double minimumInchesFromTarget, Angle minimumHeadingFromTarget, Function<Void, Double> completionBasedFunction, Flow flow) throws InterruptedException
+    public void matchPose(String movementName,
+                          PoseTrackingEncoderWheelSystem ptews,
+                          Pose desiredPose,
+                          double minimumInchesFromTarget,
+                          Angle minimumHeadingFromTarget,
+                          Function<Void, Double> completionBasedFunction,
+                          Flow flow) throws InterruptedException
     {
         ProcessConsole console = LoggingBase.instance.newProcessConsole("Matching Pose");
 
@@ -120,8 +126,10 @@ public class SpeedyMecanumDrive
             Pose currentPose = ptews.getCurrentPose();
 
             Vector positionalOffsetFromTarget = desiredPose.position.subtract(currentPose.position);
+
             if (Double.isNaN(originalTargetOffset))
                 originalTargetOffset = positionalOffsetFromTarget.magnitude();
+
             double headingDegreeOffsetFromTarget = desiredPose.heading.quickestDegreeMovementTo(currentPose.heading);
 
             if (positionalOffsetFromTarget.magnitude() <= minimumInchesFromTarget && Math.abs(headingDegreeOffsetFromTarget) <= minimumHeadingFromTarget.degrees())

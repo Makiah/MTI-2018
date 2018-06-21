@@ -21,7 +21,7 @@ public class Teleop extends EnhancedOpMode
     @Override
     protected final void onRun() throws InterruptedException
     {
-        Robot robot = new Robot(hardware, AutoOrTeleop.TELEOP);
+        Robot robot = new Robot(hardware, AutoOrTeleop.TELEOP, flow);
 
         while (!isStarted())
             flow.yield();

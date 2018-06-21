@@ -43,7 +43,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
     protected void onRun() throws InterruptedException
     {
         // Robot
-        Robot robot = new Robot(hardware, AutoOrTeleop.AUTONOMOUS);
+        Robot robot = new Robot(hardware, AutoOrTeleop.AUTONOMOUS, flow);
 
         // Vision
         VuforiaCam vuforiaCam = new VuforiaCam();
@@ -59,7 +59,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
             currentHeading = new DegreeAngle(180);
         }
         log.lines("Starting position is " + balancePlateOffset.toString(false));
-        
+
         robot.ptews.provideExternalPoseInformation(new Pose(Pose.PoseType.ABSOLUTE, balancePlateOffset, currentHeading));
 
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,11 +8,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.robot.hardware.AbsoluteEncoder;
 import org.firstinspires.ftc.teamcode.robot.hardware.ClampingFlipper;
+import org.firstinspires.ftc.teamcode.robot.hardware.DoubleRevGyro;
 import org.firstinspires.ftc.teamcode.robot.hardware.Harvester;
 import org.firstinspires.ftc.teamcode.robot.hardware.JewelKnocker;
 import org.firstinspires.ftc.teamcode.robot.hardware.PoseTrackingEncoderWheelSystem;
 import org.firstinspires.ftc.teamcode.robot.hardware.SpeedyMecanumDrive;
 
+import dude.makiah.androidlib.threading.Flow;
 import hankutanku.EnhancedOpMode;
 import hankutanku.hardware.HardwareInitializer;
 
@@ -27,8 +30,9 @@ public class Robot
     public final DcMotor relic;
     public final PoseTrackingEncoderWheelSystem ptews;
     public final JewelKnocker jewelKnocker;
+    public DoubleRevGyro gyros;
 
-    public Robot(HardwareInitializer initializer, EnhancedOpMode.AutoOrTeleop autoOrTeleop)
+    public Robot(HardwareInitializer initializer, EnhancedOpMode.AutoOrTeleop autoOrTeleop, Flow flow) throws InterruptedException
     {
         drivetrain = new SpeedyMecanumDrive(
                 initializer.initialize(DcMotor.class, "front left"),
@@ -66,5 +70,14 @@ public class Robot
                 new AbsoluteEncoder(initializer.initialize(AnalogInput.class, "center tracking wheel")),
                 new AbsoluteEncoder(initializer.initialize(AnalogInput.class, "right tracking wheel"))
         );
+
+        if (autoOrTeleop == EnhancedOpMode.AutoOrTeleop.AUTONOMOUS)
+        {
+            gyros = new DoubleRevGyro(
+                    initializer.map.get(BNO055IMU.class, "imu1"),
+                    initializer.map.get(BNO055IMU.class, "imu2"),
+                    flow
+            );
+        }
     }
 }
