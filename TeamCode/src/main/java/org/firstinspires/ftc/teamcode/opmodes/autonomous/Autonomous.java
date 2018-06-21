@@ -100,13 +100,13 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
                 switch (vumark)
                 {
                     case LEFT:
-                        Tunes.play(Tunes.Option.LEFT_COL);
+                        Tunes.play(Tunes.Option.LEFT_COL, true);
                         break;
                     case CENTER:
-                        Tunes.play(Tunes.Option.CENTER_COL);
+                        Tunes.play(Tunes.Option.CENTER_COL, true);
                         break;
                     case RIGHT:
-                        Tunes.play(Tunes.Option.RIGHT_COL);
+                        Tunes.play(Tunes.Option.RIGHT_COL, true);
                         break;
                 }
 
@@ -126,18 +126,15 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
         robot.jewelKnocker.knockJewel(getAlliance() == Alliance.BLUE, flow);
 
-        // Steady timed drive (manual) off the balance board.
+        // Steady drive (manual) off the balance board, using the rev hub gyros to determine when we're level (aka off the platform).
         robot.drivetrain.move(new CartesianVector(0, .25), 0);
 
         long start = System.currentTimeMillis();
-        while (System.currentTimeMillis() - start < 1000)
-        {
-            robot.ptews.update();
+        while (System.currentTimeMillis() - start < 500) // Give the robot some time to angle downward.
             flow.yield();
-        }
-        robot.drivetrain.move(null, 0);
 
-        flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 5));
+        while (Math.abs(robot.gyros.hubAnglesAveraged()[1].quickestDegreeMovementTo(new DegreeAngle(0))) > 5)
+            flow.yield();
 
         if (getBalancePlate() == BalancePlate.BOTTOM)
         {
