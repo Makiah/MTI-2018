@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.robot.structs.Pose;
 import dude.makiah.androidlib.logging.LoggingBase;
 import dude.makiah.androidlib.logging.ProcessConsole;
 import dude.makiah.androidlib.threading.Flow;
+import dude.makiah.androidlib.threading.TimeMeasure;
 import hankutanku.math.angle.Angle;
 import hankutanku.math.angle.DegreeAngle;
 import hankutanku.math.function.Function;
@@ -99,6 +100,7 @@ public class SpeedyMecanumDrive
      * @param desiredPose  The pose which the mecanum drive should attempt to reach.
      * @param minimumInchesFromTarget  The maximum number of inches from the target pose which enables the robot to stop this code block.
      * @param minimumHeadingFromTarget  The maximum angle from the target pose which enables the robot to stop this code block.
+     * @param timeoutLength  The maximum angle from the target pose which enables the robot to stop this code block.
      * @param completionBasedFunction  A function which returns void and receives a 0-1 input representing how close we are from execution completion.
      */
     public void matchPose(String movementName,
@@ -106,6 +108,7 @@ public class SpeedyMecanumDrive
                           Pose desiredPose,
                           double minimumInchesFromTarget,
                           Angle minimumHeadingFromTarget,
+                          TimeMeasure timeoutLength,
                           Function<Void, Double> completionBasedFunction,
                           Flow flow) throws InterruptedException
     {
@@ -117,25 +120,54 @@ public class SpeedyMecanumDrive
             desiredPose = new Pose(Pose.PoseType.ABSOLUTE, ptews.getCurrentPose().position.add(desiredPose.position), ptews.getCurrentPose().heading.add(desiredPose.heading));
         }
 
+        Vector previousPositionalOffset = null;
+        double previousHeadingOffset = Double.NaN;
+
+        double movementPowerUpFactor = 0;
+        double headingPowerUpFactor = 0;
+
         double originalTargetOffset = Double.NaN;
+
+        long start = System.currentTimeMillis();
 
         while (true)
         {
+            if (System.currentTimeMillis() - start > timeoutLength.durationIn(TimeMeasure.Units.MILLISECONDS))
+            {
+                LoggingBase.instance.lines("Timed out");
+                break;
+            }
+
             ptews.update();
 
             Pose currentPose = ptews.getCurrentPose();
-
             Vector positionalOffsetFromTarget = desiredPose.position.subtract(currentPose.position);
-
             if (Double.isNaN(originalTargetOffset))
                 originalTargetOffset = positionalOffsetFromTarget.magnitude();
 
             double headingDegreeOffsetFromTarget = desiredPose.heading.quickestDegreeMovementTo(currentPose.heading);
-
             if (positionalOffsetFromTarget.magnitude() <= minimumInchesFromTarget && Math.abs(headingDegreeOffsetFromTarget) <= minimumHeadingFromTarget.degrees())
+            {
+                LoggingBase.instance.lines("Quit" + movementName + " because position offset is " + positionalOffsetFromTarget.toString(false) + " and heading offset is " + headingDegreeOffsetFromTarget);
                 break;
+            }
 
-            move(positionalOffsetFromTarget.rotateBy(currentPose.heading.negative()).divide(50), headingDegreeOffsetFromTarget / 70);
+            move(positionalOffsetFromTarget.rotateBy(currentPose.heading.negative()).divide(20), headingDegreeOffsetFromTarget / 20);
+
+            if (previousPositionalOffset != null)
+            {
+                Vector movedSinceLastLoop = positionalOffsetFromTarget.subtract(previousPositionalOffset);
+//                movementPowerUpFactor += (.1 - (movedSinceLastLoop.magnitude() / previousPositionalOffset.magnitude())) * .5; // should have moved 10 percent more of the way toward our target destination.
+            }
+            previousPositionalOffset = positionalOffsetFromTarget;
+
+
+            if (!Double.isNaN(previousHeadingOffset))
+            {
+                double degreesMovedSinceLastLoop = new DegreeAngle(headingDegreeOffsetFromTarget).quickestDegreeMovementTo(new DegreeAngle(previousHeadingOffset));
+//                headingPowerUpFactor += (.1 - (Math.abs(degreesMovedSinceLastLoop) / Math.abs(previousHeadingOffset))) * .06; // should have moved 10 percent more of the required heading.
+            }
+            previousHeadingOffset = headingDegreeOffsetFromTarget;
 
             if (completionBasedFunction != null)
                 completionBasedFunction.value((1.0 - positionalOffsetFromTarget.magnitude()) / originalTargetOffset);
@@ -144,13 +176,17 @@ public class SpeedyMecanumDrive
                     movementName,
                     "Target pose is " + desiredPose.toString(),
                     "Positional offset is " + positionalOffsetFromTarget.toString(false),
-                    "Heading offset is " + Vector.decimalFormat.format(headingDegreeOffsetFromTarget));
+                    "Heading offset is " + Vector.decimalFormat.format(headingDegreeOffsetFromTarget),
+                    "Movement power up is " + movementPowerUpFactor,
+                    "Heading power up is " + headingPowerUpFactor);
 
             flow.yield();
         }
 
         move(null, 0);
 
-        flow.yield();
+//        flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 10));
+
+        console.destroy();
     }
 }

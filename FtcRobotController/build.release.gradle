@@ -1,6 +1,8 @@
 dependencies {
     compile project(':makiahsandroidlib')
 
+    compile project(':FtcDashboard')
+
     compile (name:'Inspection-release', ext: 'aar')
     compile (name:'Blocks-release', ext: 'aar')
     compile (name:'RobotCore-release', ext: 'aar')

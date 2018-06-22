@@ -25,7 +25,9 @@ public class Tunes
         USSR_Anthem (R.raw.ussranthem),
         LEFT_COL (R.raw.leftcol),
         CENTER_COL (R.raw.centercol),
-        RIGHT_COL(R.raw.rightcol);
+        RIGHT_COL(R.raw.rightcol),
+        ONE_GLYPH(R.raw.oneglyph),
+        TWO_GLYPH(R.raw.twoglyphs);
 
         public final int resourceAddress;
         Option(int resourceAddress)
@@ -35,6 +37,8 @@ public class Tunes
     }
 
     private static MediaPlayer mediaPlayer = null;
+    private static boolean changedVol = false;
+    private static int previousVol = 0;
 
     /**
      * Calling play initializes the media player with the given app context and starts playing a song.
@@ -47,8 +51,12 @@ public class Tunes
         {
             if (forceVolumeMax)
             {
+                changedVol = true;
+
                 AudioManager am =
                         (AudioManager) HankuBaseActivity.instance.getSystemService(Context.AUDIO_SERVICE);
+
+                previousVol = am.getStreamVolume(AudioManager.STREAM_MUSIC);
 
                 am.setStreamVolume(
                         AudioManager.STREAM_MUSIC,
@@ -71,8 +79,10 @@ public class Tunes
 
                         am.setStreamVolume(
                                 AudioManager.STREAM_MUSIC,
-                                1,
+                                previousVol,
                                 0);
+
+                        changedVol = false;
                     }
                 }
             });
@@ -103,7 +113,22 @@ public class Tunes
             if (mediaPlayer != null)
             {
                 if (mediaPlayer.isPlaying ())
-                    mediaPlayer.stop (); //stopEasyTask playing
+                {
+                    mediaPlayer.stop(); //stopEasyTask playing
+
+                    if (changedVol)
+                    {
+                        AudioManager am =
+                                (AudioManager) HankuBaseActivity.instance.getSystemService(Context.AUDIO_SERVICE);
+
+                        am.setStreamVolume(
+                                AudioManager.STREAM_MUSIC,
+                                previousVol,
+                                0);
+
+                        changedVol = false;
+                    }
+                }
                 mediaPlayer.release (); //prevent resource allocation
                 mediaPlayer = null; //nullify the reference.
             }

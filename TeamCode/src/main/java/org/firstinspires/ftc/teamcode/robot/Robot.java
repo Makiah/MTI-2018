@@ -1,17 +1,16 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.robot.hardware.AbsoluteEncoder;
 import org.firstinspires.ftc.teamcode.robot.hardware.ClampingFlipper;
-import org.firstinspires.ftc.teamcode.robot.hardware.DoubleRevGyro;
 import org.firstinspires.ftc.teamcode.robot.hardware.Harvester;
 import org.firstinspires.ftc.teamcode.robot.hardware.JewelKnocker;
 import org.firstinspires.ftc.teamcode.robot.hardware.PoseTrackingEncoderWheelSystem;
+import org.firstinspires.ftc.teamcode.robot.hardware.RelicArm;
 import org.firstinspires.ftc.teamcode.robot.hardware.SpeedyMecanumDrive;
 
 import dude.makiah.androidlib.threading.Flow;
@@ -27,10 +26,10 @@ public class Robot
     public final ClampingFlipper flipper;
     public final DcMotor lift;
     public final Harvester harvester;
-    public final DcMotor relic;
+    public final RelicArm relic;
     public final PoseTrackingEncoderWheelSystem ptews;
     public final JewelKnocker jewelKnocker;
-    public DoubleRevGyro gyros;
+    public DistanceSensor glyphSensor = null, glyphSensor2 = null;
 
     public Robot(HardwareInitializer initializer, EnhancedOpMode.AutoOrTeleop autoOrTeleop, Flow flow) throws InterruptedException
     {
@@ -56,13 +55,9 @@ public class Robot
                 initializer.initialize(DcMotor.class, "right harvester")
         );
 
-        relic = initializer.initialize(DcMotor.class, "relic");
-
         jewelKnocker = new JewelKnocker(
                 initializer.initialize(Servo.class, "servo4"),
-                initializer.initialize(Servo.class, "servo5"),
-                initializer.initialize(ColorSensor.class, "jewel sensor"),
-                autoOrTeleop
+                initializer.initialize(Servo.class, "servo5")
         );
 
         ptews = new PoseTrackingEncoderWheelSystem(
@@ -71,13 +66,16 @@ public class Robot
                 new AbsoluteEncoder(initializer.initialize(AnalogInput.class, "right tracking wheel"))
         );
 
+        relic = new RelicArm(
+                initializer.initialize(DcMotor.class, "relic"),
+                initializer.initialize(Servo.class, "servo6"),
+                initializer.initialize(Servo.class, "servo7")
+        );
+
         if (autoOrTeleop == EnhancedOpMode.AutoOrTeleop.AUTONOMOUS)
         {
-            gyros = new DoubleRevGyro(
-                    initializer.map.get(BNO055IMU.class, "imu1"),
-                    initializer.map.get(BNO055IMU.class, "imu2"),
-                    flow
-            );
+            glyphSensor = initializer.map.get(DistanceSensor.class, "glyph sensor");
+            glyphSensor2 = initializer.map.get(DistanceSensor.class, "glyph sensor 2");
         }
     }
 }

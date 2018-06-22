@@ -14,21 +14,16 @@ import java.util.Locale;
 import dude.makiah.androidlib.logging.ProcessConsole;
 import hankutanku.EnhancedOpMode;
 
-@Autonomous(name="Test Color Sensor", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
+@Autonomous(name="Test Rev Sensor", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
 public class TestColorSensor extends EnhancedOpMode
 {
     @Override
     protected void onRun() throws InterruptedException
     {
-        ColorSensor sensorColor = hardware.initialize(ColorSensor.class, "jewel sensor");;
-        DistanceSensor sensorDistance = hardware.initialize(DistanceSensor.class, "jewel sensor");;
-
-        // hsvValues is an array that will hold the hue, saturation, and value information.
-        float hsvValues[] = {0F, 0F, 0F};
-
-        // sometimes it helps to multiply the raw RGB values with a scale factor
-        // to amplify/attentuate the measured values.
-        final double SCALE_FACTOR = 255;
+        ColorSensor sensorColor = hardware.initialize(ColorSensor.class, "glyph sensor");;
+        DistanceSensor sensorDistance = hardware.initialize(DistanceSensor.class, "glyph sensor");
+        ColorSensor sensorColor1 = hardware.initialize(ColorSensor.class, "glyph sensor 2");
+        DistanceSensor sensorDistance1 = hardware.initialize(DistanceSensor.class, "glyph sensor 2");
 
         ProcessConsole console = log.newProcessConsole("Jewel Sensor Data");
 
@@ -36,22 +31,18 @@ public class TestColorSensor extends EnhancedOpMode
         // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (true)
         {
-            // convert the RGB values to HSV values.
-            // multiply by the SCALE_FACTOR.
-            // then cast it back to int (SCALE_FACTOR is a double)
-            Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
-                    (int) (sensorColor.green() * SCALE_FACTOR),
-                    (int) (sensorColor.blue() * SCALE_FACTOR),
-                    hsvValues);
-
             console.write(
                     "Distance (cm): " + String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)),
                     "Alpha: " + sensorColor.alpha(),
                     "Red: " + sensorColor.red(),
                     "Green: " + sensorColor.green(),
                     "Blue: " + sensorColor.blue(),
-                    "Hue: " + hsvValues[0],
-                    "Currently seeing: " + (hsvValues[0] > 310 ? "red" : "blue"));
+                    "====",
+                    "Distance (cm): " + String.format(Locale.US, "%.02f", sensorDistance1.getDistance(DistanceUnit.CM)),
+                    "Alpha: " + sensorColor1.alpha(),
+                    "Red: " + sensorColor1.red(),
+                    "Green: " + sensorColor1.green(),
+                    "Blue: " + sensorColor1.blue());
 
             flow.yield();
         }

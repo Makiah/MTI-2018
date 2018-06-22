@@ -59,7 +59,7 @@ public class JewelDetector extends EnhancedOpMode implements VisionOpMode
     }
 
     private enum ColorDetectionMethod { YCrCb, CYMK }
-    private final ColorDetectionMethod colorDetectionMethod = ColorDetectionMethod.CYMK;
+    private final ColorDetectionMethod colorDetectionMethod = ColorDetectionMethod.YCrCb;
 
     private final Scalar
             RED = new Scalar(255, 0, 0),

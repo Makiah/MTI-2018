@@ -2,7 +2,6 @@
 // build.gradle in FtcRobotController
 //
 apply plugin: 'com.android.library'
-
 android {
 
     defaultConfig {
@@ -37,11 +36,9 @@ android {
         }
     }
 }
-
 repositories {
     flatDir {
         dirs '../libs'
     }
 }
-
 apply from: 'build.release.gradle'

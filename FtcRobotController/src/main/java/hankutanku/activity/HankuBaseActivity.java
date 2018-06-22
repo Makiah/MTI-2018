@@ -3,6 +3,8 @@ package hankutanku.activity;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.acmerobotics.dashboard.RobotDashboard;
+
 import dude.makiah.androidlib.threading.TaskParent;
 
 import hankutanku.phonesensors.AndroidGyro;
@@ -27,8 +29,11 @@ public abstract class HankuBaseActivity extends Activity implements TaskParent
         VuforiaCam.instance = null;
         AndroidGyro.instance = null;
 
+        // ACME's dashboard
+        RobotDashboard.start();
+
         // Enable when stable.
-//        Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this, this));
+        Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this, this));
     }
 
     @Override
@@ -58,6 +63,8 @@ public abstract class HankuBaseActivity extends Activity implements TaskParent
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        RobotDashboard.stop();
 
         if (OpenCVCam.instance != null)
             OpenCVCam.instance.newActivityState(OpenCVCam.State.DESTROY);

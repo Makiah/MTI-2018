@@ -15,7 +15,7 @@ import hankutanku.math.angle.DegreeAngle;
 
 public class DoubleRevGyro
 {
-    private final BNO055IMU gyro1, gyro2;
+    public final BNO055IMU gyro1, gyro2;
 
     public DoubleRevGyro(BNO055IMU gyro1, BNO055IMU gyro2, Flow flow) throws InterruptedException
     {
@@ -52,8 +52,8 @@ public class DoubleRevGyro
 
     public Angle[][] hubAngles()
     {
-        Orientation angles1 = gyro1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-        Orientation angles2 = gyro2.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+        Orientation angles1 = gyro1.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+        Orientation angles2 = gyro2.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
 
         return new Angle[][]{
                 new Angle[] {new DegreeAngle(angles1.firstAngle), new DegreeAngle(angles1.secondAngle), new DegreeAngle(angles1.thirdAngle)},
@@ -64,6 +64,6 @@ public class DoubleRevGyro
     {
         Angle[][] hubAngles = hubAngles();
 
-        return new Angle[]{Angle.average(hubAngles[0]), Angle.average(hubAngles[1]), Angle.average(hubAngles[2])};
+        return new Angle[]{Angle.average(hubAngles[0][0], hubAngles[1][0]), Angle.average(hubAngles[0][1], hubAngles[1][1]), Angle.average(hubAngles[0][2], hubAngles[1][2])};
     }
 }

@@ -27,7 +27,7 @@ public class ServoTesting extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        final int numServos = 7;
+        final int numServos = 8;
 
         Servo[] servos = new Servo[numServos];
 

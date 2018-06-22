@@ -61,6 +61,7 @@ import android.widget.TextView;
 //import com.google.blocks.ftcrobotcontroller.ProgrammingModeControllerImpl;
 //import com.google.blocks.ftcrobotcontroller.ProgrammingWebHandlers;
 //import com.google.blocks.ftcrobotcontroller.runtime.BlocksOpMode;
+import com.acmerobotics.dashboard.RobotDashboard;
 import com.qualcomm.ftccommon.AboutActivity;
 import com.qualcomm.ftccommon.ClassManagerFactory;
 import com.qualcomm.ftccommon.FtcEventLoop;
@@ -584,6 +585,9 @@ public class FtcRobotControllerActivity extends HankuBaseActivity
     controllerService.setupRobot(eventLoop, idleLoop);
 
     passReceivedUsbAttachmentsToEventLoop();
+
+    // HANKU (enables op mode switching0
+    RobotDashboard.attachEventLoop(eventLoop);
   }
 
   protected OpModeRegister createOpModeRegister() {
