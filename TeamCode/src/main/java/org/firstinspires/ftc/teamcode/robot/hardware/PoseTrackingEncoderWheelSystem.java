@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
+import com.acmerobotics.dashboard.RobotDashboard;
+
 import org.firstinspires.ftc.teamcode.robot.structs.Pose;
 
 import dude.makiah.androidlib.logging.LoggingBase;
@@ -33,6 +35,8 @@ public class PoseTrackingEncoderWheelSystem
         rightWheelPrevious = rightWheel.heading();
 
         console = LoggingBase.instance.newProcessConsole("PTEWS");
+
+
     }
 
     public void reset()
