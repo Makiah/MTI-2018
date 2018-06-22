@@ -77,6 +77,15 @@ public class DrawingUtil {
     }
     */
 
+    public static Pose adjustFieldPoseToDashboardDimensions(Pose pose)
+    {
+        // top left is 50, 50
+        if (pose.poseType == Pose.PoseType.RELATIVE)
+            return null;
+
+        return new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(-(pose.position.x() - 50) * (50.0/144.0), -(pose.position.x() - 50) * (50.0/144.0)), pose.heading.opposing());
+    }
+
     public static void drawMecanumRobot(Canvas canvas, Pose robotPose) {
         canvas.setStrokeWidth(2);
         // robot body
@@ -92,7 +101,7 @@ public class DrawingUtil {
         };
 
         for (int i = 0; i < bodyVectors.length; i++) {
-            bodyVectors[i] = bodyVectors[i].rotateBy(robotPose.heading).add(robotPose.position);
+            bodyVectors[i] = bodyVectors[i].add(new CartesianVector(-(robotPose.position.y() - 24 * 3), robotPose.position.x() - 24 * 3).rotateBy(robotPose.heading.negative())).rotateBy(robotPose.heading);
         }
         drawVectorPolyline(canvas, bodyVectors);
 

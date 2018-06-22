@@ -243,6 +243,9 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
             balancePlateHeading = new DegreeAngle(180);
         }
         log.lines("Starting position is " + balancePlateOffset.toString(false));
+        robot.ptews.provideExternalPoseInformation(new Pose(Pose.PoseType.ABSOLUTE, balancePlateOffset, balancePlateHeading)); // untracked distance.
+        robot.ptews.update(); // draws robot on dashboard.
+        flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 3));
 
         // region Initialization Detection of the Crypto Key and Jewel Alignment
 
@@ -400,6 +403,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
         robot.ptews.reset();
         robot.ptews.provideExternalPoseInformation(new Pose(Pose.PoseType.ABSOLUTE, balancePlateOffset.add(new CartesianVector(0, 22)), balancePlateHeading)); // untracked distance.
+        robot.ptews.update();
 
         if (getBalancePlate() == BalancePlate.BOTTOM)
         {

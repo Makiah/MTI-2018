@@ -11,28 +11,38 @@ import org.firstinspires.ftc.teamcode.robot.structs.Pose;
 
 import dude.makiah.androidlib.threading.TimeMeasure;
 import hankutanku.EnhancedOpMode;
+import hankutanku.math.angle.Angle;
 import hankutanku.math.angle.DegreeAngle;
 import hankutanku.math.vector.CartesianVector;
 
 @Autonomous(name="Attempt to Display FPosition", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
 public class AttemptToDisplayFieldPosition extends EnhancedOpMode
 {
+    public void drawRobotAtPose(Pose pose, String stroke) throws InterruptedException
+    {
+        TelemetryPacket tPacket = new TelemetryPacket();
+        Canvas fieldOverlay = tPacket.fieldOverlay();
+
+        fieldOverlay.setStroke(stroke);
+        DrawingUtil.drawMecanumRobot(fieldOverlay, pose);
+
+        RobotDashboard.getInstance().sendTelemetryPacket(tPacket);
+
+        flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 3));
+    }
+
     @Override
     protected void onRun() throws InterruptedException
     {
-        long start = System.currentTimeMillis();
-
         while (true)
         {
-            TelemetryPacket tPacket = new TelemetryPacket();
-            Canvas fieldOverlay = tPacket.fieldOverlay();
+            Angle offset = new DegreeAngle(Math.random() * 360);
 
-            fieldOverlay.setStroke("#3F51B5");
-            DrawingUtil.drawMecanumRobot(fieldOverlay, new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(50, 50 + (System.currentTimeMillis() - start) / 1000), new DegreeAngle(45)));
-
-            RobotDashboard.getInstance().sendTelemetryPacket(tPacket);
-
-            flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 1));
+            // one tile
+            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24, 24), offset), "#FFFF");
+            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(120, 24), offset), "#3F51B5");
+            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(120, 96), offset), "#3F51B5");
+            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24, 96), offset), "#3F51B5");
         }
     }
 }

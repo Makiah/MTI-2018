@@ -49,6 +49,14 @@ public class IncrementalAbsoluteEncoder
         previousEncoderAngle = absoluteEncoder.heading();
     }
 
+    public void resetEncoderWheel()
+    {
+        previousEncoderAngle = null;
+        currentAngularVelocity = 0;
+        lastTimeCheck = 0;
+        totalDegreeOffset = 0;
+    }
+
     public double getTotalDegreeOffset()
     {
         return totalDegreeOffset;
