@@ -587,7 +587,8 @@ public class FtcRobotControllerActivity extends HankuBaseActivity
     passReceivedUsbAttachmentsToEventLoop();
 
     // HANKU (enables op mode switching0
-    RobotDashboard.attachEventLoop(eventLoop);
+    if (!NO_DASHBOARD)
+      RobotDashboard.attachEventLoop(eventLoop);
   }
 
   protected OpModeRegister createOpModeRegister() {

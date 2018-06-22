@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -16,6 +18,7 @@ import org.firstinspires.ftc.teamcode.robot.hardware.SpeedyMecanumDrive;
 import dude.makiah.androidlib.threading.Flow;
 import hankutanku.EnhancedOpMode;
 import hankutanku.hardware.HardwareInitializer;
+import hankutanku.hardware.OpenRevDcMotorImplEx;
 
 /**
  * Wrapper class for all robot hardware.
@@ -51,8 +54,8 @@ public class Robot
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         harvester = new Harvester(
-                initializer.initialize(DcMotor.class, "left harvester"),
-                initializer.initialize(DcMotor.class, "right harvester")
+                new OpenRevDcMotorImplEx((DcMotorImplEx) initializer.map.dcMotor.get("left harvester")),
+                new OpenRevDcMotorImplEx((DcMotorImplEx) initializer.map.dcMotor.get("right harvester"))
         );
 
         jewelKnocker = new JewelKnocker(

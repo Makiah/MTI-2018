@@ -17,7 +17,7 @@ public class TelemetryWrapper extends LoggingBase
     /**
      * Resets the entire console with empty content.
      */
-    public TelemetryWrapper(Telemetry mainTelemetry) throws InterruptedException
+    public TelemetryWrapper(Telemetry mainTelemetry)
     {
         super(EnhancedOpMode.instance);
 
@@ -36,9 +36,6 @@ public class TelemetryWrapper extends LoggingBase
     {
         if (mainTelemetry != null)
         {
-            //Clear all lines.
-            mainTelemetry.update ();
-
             //Add all private console data.
             for (ProcessConsole pConsole : privateProcessConsoles)
             {

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -41,6 +43,7 @@ import hankutanku.vision.vuforia.VuforiaCam;
  * |______________________________|
  * (0, 0)      (180 degrees)       (144, 0)
  */
+//@Config //(doesn't work on abstract classes)
 public abstract class Autonomous extends EnhancedOpMode implements CompetitionProgram
 {
     private Robot robot;
@@ -53,10 +56,10 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
      */
     private int harvestGlyphs() throws InterruptedException
     {
-        robot.harvester.run(-1);
+        robot.harvester.run(-AutonomousSettings.harvestPower);
         int glyphsGrabbed = 0;
 
-        robot.drivetrain.move(new CartesianVector(0, .3), 0);
+        robot.drivetrain.move(new CartesianVector(0, AutonomousSettings.harvestMoveForwardSpeed), 0);
         while (robot.ptews.getCurrentPose().position.x() < 60)
         {
             robot.ptews.update();
@@ -108,20 +111,22 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
             Angle glyphDepositAngle = new DegreeAngle(0);
             Angle columnOffset = new DegreeAngle(0);
 
+            final double cryptoboxXPos = getAlliance() == Alliance.BLUE ? 24 : 120;
+
             switch (col) {
                 case LEFT:
-                    absoluteDepositLocation = new CartesianVector(24, 52); // offset by 4 from the 3rd tile beginning
-                    columnOffset = new DegreeAngle(35);
+                    absoluteDepositLocation = new CartesianVector(cryptoboxXPos, 52); // offset by 4 from the 3rd tile beginning
+                    columnOffset = new DegreeAngle(AutonomousSettings.depositAngleOffset);
                     break;
 
                 case CENTER:
-                    absoluteDepositLocation = new CartesianVector(24, 60);
-                    columnOffset = new DegreeAngle(-35);
+                    absoluteDepositLocation = new CartesianVector(cryptoboxXPos, 60);
+                    columnOffset = new DegreeAngle(-AutonomousSettings.depositAngleOffset);
                     break;
 
                 case RIGHT:
-                    absoluteDepositLocation = new CartesianVector(24, 68); // offset by -4 from the 3rd tile end
-                    columnOffset = new DegreeAngle(-35);
+                    absoluteDepositLocation = new CartesianVector(cryptoboxXPos, 68); // offset by -4 from the 3rd tile end
+                    columnOffset = new DegreeAngle(-AutonomousSettings.depositAngleOffset);
                     break;
             }
 

@@ -2,6 +2,9 @@ package hankutanku;
 
 import dude.makiah.androidlib.threading.Flow;
 import dude.makiah.androidlib.threading.TaskParent;
+
+import com.acmerobotics.dashboard.RobotDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.ftccommon.FtcEventLoopHandler;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.Range;
@@ -104,7 +107,8 @@ public abstract class EnhancedOpMode extends LinearOpMode implements TaskParent
 
             //Classes such as NiFTMusic require this so that they can get the context they require.
             flow = new Flow(this);
-            log = new TelemetryWrapper(telemetry);
+//            log = new TelemetryWrapper(telemetry);
+            log = new TelemetryWrapper(new MultipleTelemetry(telemetry, RobotDashboard.getInstance().getTelemetry()));
 
             // Update the battery coefficient.
             updateBatteryCoefficient(12.4, 14.1);

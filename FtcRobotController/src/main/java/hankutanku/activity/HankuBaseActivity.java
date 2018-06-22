@@ -18,6 +18,7 @@ import hankutanku.vision.vuforia.VuforiaCam;
 public abstract class HankuBaseActivity extends Activity implements TaskParent
 {
     public static HankuBaseActivity instance;
+    public static boolean NO_DASHBOARD = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -30,7 +31,16 @@ public abstract class HankuBaseActivity extends Activity implements TaskParent
         AndroidGyro.instance = null;
 
         // ACME's dashboard
-        RobotDashboard.start();
+        try
+        {
+            if (!NO_DASHBOARD)
+                RobotDashboard.start(); // It freaks out when there's no receiver attached, so this stops it until the next run.
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            NO_DASHBOARD = true;
+        } // Ignore
 
         // Enable when stable.
         Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this, this));
@@ -64,7 +74,8 @@ public abstract class HankuBaseActivity extends Activity implements TaskParent
     protected void onDestroy() {
         super.onDestroy();
 
-        RobotDashboard.stop();
+        if (!NO_DASHBOARD)
+            RobotDashboard.stop();
 
         if (OpenCVCam.instance != null)
             OpenCVCam.instance.newActivityState(OpenCVCam.State.DESTROY);

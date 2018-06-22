@@ -16,7 +16,10 @@ public class IncrementalAbsoluteEncoder
     public void updateIncremental()
     {
         if (previousEncoderAngle != null)
+        {
+            // TODO make more complex, and thus more accurate
             totalDegreeOffset += previousEncoderAngle.quickestDegreeMovementTo(absoluteEncoder.heading());
+        }
 
         previousEncoderAngle = absoluteEncoder.heading();
     }

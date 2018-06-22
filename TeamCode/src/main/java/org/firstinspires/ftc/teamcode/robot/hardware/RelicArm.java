@@ -1,12 +1,19 @@
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Config
 public class RelicArm
 {
     private final DcMotor extender;
     private final Servo rotator, grabber;
+
+    public static double rotatorUp = .361;
+    public static double rotatorDown = .832;
+    public static double grabberGrab = .713;
+    public static double grabberRelease = 0;
 
     public RelicArm(DcMotor extender, Servo rotator, Servo grabber)
     {
@@ -30,7 +37,7 @@ public class RelicArm
     {
         this.up = up;
 
-        rotator.setPosition(up ? .361 : .832);
+        rotator.setPosition(up ? rotatorUp : rotatorDown);
     }
 
     public void toggleRotator()
@@ -44,7 +51,7 @@ public class RelicArm
     {
         this.grab = grab;
 
-        grabber.setPosition(grab ? .713 : 0);
+        grabber.setPosition(grab ? grabberGrab : grabberRelease);
     }
 
     public void toggleGrabbingState()
