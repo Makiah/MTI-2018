@@ -35,8 +35,6 @@ public class PoseTrackingEncoderWheelSystem
         this.rightWheel = new IncrementalAbsoluteEncoder(rightWheel);
 
         console = LoggingBase.instance.newProcessConsole("PTEWS");
-
-        redrawRobotForDashboard();
     }
 
     public void reset()

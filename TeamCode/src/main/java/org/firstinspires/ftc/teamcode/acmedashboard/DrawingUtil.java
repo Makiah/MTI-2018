@@ -101,7 +101,7 @@ public class DrawingUtil {
         };
 
         for (int i = 0; i < bodyVectors.length; i++) {
-            bodyVectors[i] = bodyVectors[i].add(new CartesianVector(-(robotPose.position.y() - 24 * 3), robotPose.position.x() - 24 * 3).rotateBy(robotPose.heading.negative())).rotateBy(robotPose.heading);
+            bodyVectors[i] = bodyVectors[i].add(new CartesianVector(-(robotPose.position.y() - 24 * 3), robotPose.position.x() - 24 * 3).rotateBy(robotPose.heading.opposing().negative())).rotateBy(robotPose.heading.opposing());
         }
         drawVectorPolyline(canvas, bodyVectors);
 

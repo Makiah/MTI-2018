@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import com.acmerobotics.dashboard.RobotDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -84,6 +85,8 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
             flow.yield();
         }
+
+        robot.drivetrain.move(null, 0);
 
         robot.harvester.run(0);
 
@@ -244,8 +247,6 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
         }
         log.lines("Starting position is " + balancePlateOffset.toString(false));
         robot.ptews.provideExternalPoseInformation(new Pose(Pose.PoseType.ABSOLUTE, balancePlateOffset, balancePlateHeading)); // untracked distance.
-        robot.ptews.update(); // draws robot on dashboard.
-        flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 3));
 
         // region Initialization Detection of the Crypto Key and Jewel Alignment
 
