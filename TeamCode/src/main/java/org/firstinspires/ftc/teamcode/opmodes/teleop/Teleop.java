@@ -78,10 +78,17 @@ public class Teleop extends EnhancedOpMode
                 double turnSpeed = HTGamepad.CONTROLLER1.gamepad.right_stick_x;
 
                 // Two different modes: intake and deposit.  The deposit mode results in the trigger being used to slow down the robot.
-                if (robot.flipper.canIntakeGlyphs()) {
-                    robot.harvester.run((gamepad1.left_trigger - gamepad1.right_trigger) * .7);
+                if (robot.flipper.canIntakeGlyphs())
+                {
+                    robot.harvester.run((gamepad1.right_trigger - gamepad1.left_trigger) * .7);
+                    if (HTGamepad.CONTROLLER1.y.currentState == HTButton.ButtonState.JUST_TAPPED)
+                        robot.harvester.toggleFixingStateDisabled();
+                    robot.harvester.update();
+
                     robot.drivetrain.move(driveVector, turnSpeed);
-                } else {
+                }
+                else
+                {
                     robot.harvester.run(0);
 
                     double powerReductionFactor = (3 * gamepad1.left_trigger + 1);
@@ -106,7 +113,8 @@ public class Teleop extends EnhancedOpMode
                 robot.relic.setExtensionPower(gamepad1.right_trigger - gamepad1.left_trigger);
             }
 
-            console.write("In " + (inRelicMode ? "relic" : "glyph") + " mode");
+            console.write("In " + (inRelicMode ? "relic" : "glyph") + " mode",
+                    "Harvester fix mode " + !robot.harvester.fixingStateDisabled);
 
             flow.yield();
         }

@@ -11,7 +11,7 @@ import hankutanku.EnhancedOpMode;
 public class JewelKnocker
 {
     private final Servo extender, knocker;
-    private final double extenderIn = .46, extenderOut = .68, extenderHelpKnock = .03;
+    private final double extenderIn = .494, extenderOut = .68, extenderHelpKnock = .03;
     private final double knockerLeft = 0, knockerMiddle = .295, knockerMiddleClose = .51, knockerRight = .597, knockerIn = 1;
 
     public JewelKnocker(Servo extender, Servo knocker)

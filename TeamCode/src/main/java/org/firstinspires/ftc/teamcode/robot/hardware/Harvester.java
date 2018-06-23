@@ -1,28 +1,34 @@
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import dude.makiah.androidlib.logging.LoggingBase;
+import dude.makiah.androidlib.logging.ProcessConsole;
 import hankutanku.hardware.OpenRevDcMotorImplEx;
 
 @Config
 public class Harvester
 {
-    public static double currentDrawToTriggerRotation = 4;
+    public static double currentDrawToTriggerRotation = 1600;
     public static double fixLengthMS = 400;
 
     private final OpenRevDcMotorImplEx leftHarvest, rightHarvest;
 
     private enum State {NORMAL, FIXING}
     private State state = State.NORMAL;
-    private long startState = 0;
+    private long fixStartTimestamp = 0, fixEndTimestamp = 0;
     private double currentPower = .4;
+
+    public boolean fixingStateDisabled = true;
+
+    private final ProcessConsole console;
 
     public Harvester (OpenRevDcMotorImplEx leftHarvest, OpenRevDcMotorImplEx rightHarvest)
     {
         this.leftHarvest = leftHarvest;
         this.rightHarvest = rightHarvest;
+
+        console = LoggingBase.instance.newProcessConsole("Harvester");
     }
 
     public void run(double power)
@@ -31,28 +37,43 @@ public class Harvester
 
         if (state != State.FIXING)
         {
-            leftHarvest.setPower(currentPower);
-            rightHarvest.setPower(currentPower);
+            leftHarvest.setPower(-currentPower);
+            rightHarvest.setPower(-currentPower);
         }
+    }
+
+    public void toggleFixingStateDisabled()
+    {
+        setFixingStateDisabled(!fixingStateDisabled);
+    }
+
+    public void setFixingStateDisabled(boolean disabled)
+    {
+        this.fixingStateDisabled = disabled;
     }
 
     public void update()
     {
-        if (state == State.FIXING && (System.currentTimeMillis() - startState) > fixLengthMS)
+        if (fixingStateDisabled)
+            return;
+
+        double leftDraw = Math.abs(leftHarvest.getCurrentDraw());
+
+        console.write("Left draw is " + leftDraw);
+
+        if (state == State.FIXING && (System.currentTimeMillis() - fixStartTimestamp) > fixLengthMS)
         {
             state = State.NORMAL;
-            startState = System.currentTimeMillis();
-
-            leftHarvest.setPower(currentPower);
-            rightHarvest.setPower(currentPower);
+            run(currentPower);
+            fixEndTimestamp = System.currentTimeMillis();
         }
 
-        if (state == State.NORMAL && (Math.abs(leftHarvest.getCurrentDraw()) > currentDrawToTriggerRotation || Math.abs(rightHarvest.getCurrentDraw()) > currentDrawToTriggerRotation))
+        if (currentPower < 0 && state == State.NORMAL && leftDraw > currentDrawToTriggerRotation && (System.currentTimeMillis() - fixEndTimestamp) > 2000)
         {
             state = State.FIXING;
-            startState = System.currentTimeMillis();
+            fixStartTimestamp = System.currentTimeMillis();
 
-            this.leftHarvest.setPower(.4);
+            this.leftHarvest.setPower(-.1);
             this.rightHarvest.setPower(-.4);
         }
     }
