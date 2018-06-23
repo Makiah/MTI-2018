@@ -53,6 +53,11 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
     @Override
     protected void onRun() throws InterruptedException
     {
+        // Update constants based on battery coefficient
+        AutonomousSettings.harvestMoveForwardSpeed -= (batteryCoefficient) * .3;
+        AutonomousSettings.maxMoveSpeed -= (batteryCoefficient) * .3;
+        AutonomousSettings.maxTurnSpeed -= (batteryCoefficient) * .2;
+
         // Robot
         robot = new Robot(hardware, AutoOrTeleop.AUTONOMOUS, flow);
 
