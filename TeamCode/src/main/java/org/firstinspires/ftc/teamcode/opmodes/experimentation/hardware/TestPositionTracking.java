@@ -7,9 +7,13 @@ import org.firstinspires.ftc.teamcode.OpModeDisplayGroups;
 import org.firstinspires.ftc.teamcode.robot.hardware.AbsoluteEncoder;
 import org.firstinspires.ftc.teamcode.robot.hardware.IncrementalAbsoluteEncoder;
 import org.firstinspires.ftc.teamcode.robot.hardware.PoseTrackingEncoderWheelSystem;
+import org.firstinspires.ftc.teamcode.robot.structs.Pose;
 
 import dude.makiah.androidlib.logging.ProcessConsole;
+import dude.makiah.androidlib.threading.TimeMeasure;
 import hankutanku.EnhancedOpMode;
+import hankutanku.math.angle.DegreeAngle;
+import hankutanku.math.vector.CartesianVector;
 
 @Autonomous(name="Test Pose Tracking", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
 public class TestPositionTracking extends EnhancedOpMode
@@ -23,13 +27,13 @@ public class TestPositionTracking extends EnhancedOpMode
                 new AbsoluteEncoder(hardwareMap.analogInput.get("right tracking wheel"))
         );
 
-        ProcessConsole console = log.newProcessConsole("Tracking Pose...");
+        ptews.provideExternalPoseInformation(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(72, 48), new DegreeAngle(0)));
 
         while (true)
         {
             ptews.update();
 
-            flow.yield();
+            flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 20));
         }
     }
 }

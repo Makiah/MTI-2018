@@ -107,8 +107,8 @@ public abstract class EnhancedOpMode extends LinearOpMode implements TaskParent
 
             //Classes such as NiFTMusic require this so that they can get the context they require.
             flow = new Flow(this);
-//            log = new TelemetryWrapper(telemetry);
-            log = new TelemetryWrapper(telemetry); // Don't do multiple telemetries because it doesn't seem to work very well.
+
+            log = new TelemetryWrapper(new MultipleTelemetry(telemetry, RobotDashboard.getInstance().getTelemetry())); // Don't do multiple telemetries because it doesn't seem to work very well.
 
             // Update the battery coefficient.
             updateBatteryCoefficient(12.4, 14.1);

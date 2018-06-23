@@ -27,15 +27,13 @@ public class AttemptToDisplayFieldPosition2 extends EnhancedOpMode
         DrawingUtil.drawMecanumRobot(fieldOverlay, pose);
 
         RobotDashboard.getInstance().sendTelemetryPacket(tPacket);
-
-        flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 3));
     }
 
     @Override
     protected void onRun() throws InterruptedException
     {
         long start = System.currentTimeMillis();
-        long time = 10000;
+        long time = 2000;
         while (System.currentTimeMillis() - start < time)
         {
             double x = (1.0 * System.currentTimeMillis() - start) / time;
@@ -43,31 +41,41 @@ public class AttemptToDisplayFieldPosition2 extends EnhancedOpMode
             // one tile
             drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24, 24 + x * 24), new DegreeAngle(0)), "#FFFF");
 
-            flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 3));
+            flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 20));
         }
 
         start = System.currentTimeMillis();
-        time = 10000;
+        time = 2000;
         while (System.currentTimeMillis() - start < time)
         {
             double x = (1.0 * System.currentTimeMillis() - start) / time;
 
             // one tile
-            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24 + x * 2, 24 + x * 18), new DegreeAngle(-90 * x)), "#FFFF");
+            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24 + x * 2, 48 + x * 18), new DegreeAngle(-90 * x)), "#FFFF");
 
-            flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 3));
+            flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 20));
         }
 
         start = System.currentTimeMillis();
-        time = 5000;
+        time = 1000;
         while (System.currentTimeMillis() - start < time)
         {
             double x = (1.0 * System.currentTimeMillis() - start) / time;
 
             // one tile
-            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24 + x * -8, 42), new DegreeAngle(-90)), "#FFFF");
+            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(26 + x * -8, 66), new DegreeAngle(-90)), "#FFFF");
 
-            flow.pause(new TimeMeasure(TimeMeasure.Units.SECONDS, 3));
+            flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 20));
         }
+
+//        long start = System.currentTimeMillis();
+//        while (System.currentTimeMillis() - start < 10000)
+//        {
+//            double x = (1.0 * System.currentTimeMillis() - start) / 1000.0;
+//
+//            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24, x + 5), new DegreeAngle(0)), "#FFFF");
+//
+//            flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 20));
+//        }
     }
 }

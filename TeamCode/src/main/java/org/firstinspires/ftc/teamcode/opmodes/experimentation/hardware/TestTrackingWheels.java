@@ -9,11 +9,15 @@ import org.firstinspires.ftc.teamcode.robot.hardware.IncrementalAbsoluteEncoder;
 
 import java.text.DecimalFormat;
 
+import dude.makiah.androidlib.logging.ProcessConsole;
+import dude.makiah.androidlib.threading.TimeMeasure;
+import hankutanku.EnhancedOpMode;
+
 @Autonomous(name="Test Tracking Wheels", group= OpModeDisplayGroups.FINAL_BOT_EXPERIMENTATION)
-public class TestTrackingWheels extends LinearOpMode
+public class TestTrackingWheels extends EnhancedOpMode
 {
     @Override
-    public void runOpMode() throws InterruptedException
+    public void onRun() throws InterruptedException
     {
         DecimalFormat df = new DecimalFormat("###.##");
 
@@ -27,28 +31,29 @@ public class TestTrackingWheels extends LinearOpMode
                 centerIncremental = new IncrementalAbsoluteEncoder(centerWheel),
                 rightIncremental = new IncrementalAbsoluteEncoder(rightWheel);
 
-        while (!isStopRequested())
-        {
-            telemetry.addLine("Left: " + df.format(leftWheel.heading().degrees()));
-            telemetry.addLine("Center: " + df.format(centerWheel.heading().degrees()));
-            telemetry.addLine("Right: " + df.format(rightWheel.heading().degrees()));
-            telemetry.addLine("~~~~~~~~~~~~~~~~");
+        ProcessConsole console = log.newProcessConsole("Tracking Console");
 
+        while (true)
+        {
             leftIncremental.updateIncremental();
             centerIncremental.updateIncremental();
             rightIncremental.updateIncremental();
 
-            telemetry.addLine("Left velocity: " + df.format(leftIncremental.getCurrentAngularVelocity()));
-            telemetry.addLine("Center velocity: " + df.format(centerIncremental.getCurrentAngularVelocity()));
-            telemetry.addLine("Right velocity: " + df.format(rightIncremental.getCurrentAngularVelocity()));
-            telemetry.addLine("~~~~~~~~~~~~~~~~");
-            telemetry.addLine("Left Incremental: " + df.format(leftIncremental.getTotalDegreeOffset()));
-            telemetry.addLine("Center Incremental: " + df.format(centerIncremental.getTotalDegreeOffset()));
-            telemetry.addLine("Right Incremental: " + df.format(rightIncremental.getTotalDegreeOffset()));
+            console.write(
+                    "Left: " + df.format(leftWheel.heading().degrees()),
+                    "Center: " + df.format(centerWheel.heading().degrees()),
+                    "Right: " + df.format(rightWheel.heading().degrees()),
+                    "~~~~~~~~~~~~~~~~",
+                    "Left velocity: " + df.format(leftIncremental.getCurrentAngularVelocity()),
+                    "Center velocity: " + df.format(centerIncremental.getCurrentAngularVelocity()),
+                    "Right velocity: " + df.format(rightIncremental.getCurrentAngularVelocity()),
+                    "~~~~~~~~~~~~~~~~",
+                    "Left Incremental: " + df.format(leftIncremental.getTotalDegreeOffset()),
+                    "Center Incremental: " + df.format(centerIncremental.getTotalDegreeOffset()),
+                    "Right Incremental: " + df.format(rightIncremental.getTotalDegreeOffset())
+            );
 
-            telemetry.update();
-
-            idle();
+            flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 20));
         }
     }
 }
