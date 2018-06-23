@@ -7,11 +7,15 @@ import com.acmerobotics.dashboard.RobotDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.ftccommon.FtcEventLoopHandler;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.BatteryChecker;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 
+import hankutanku.activity.FtcEventLoopHandlerModified;
+import hankutanku.activity.HankuBaseActivity;
 import hankutanku.hardware.HardwareInitializer;
 import hankutanku.input.HTGamepad;
 import hankutanku.logging.TelemetryWrapper;
@@ -40,9 +44,8 @@ public abstract class EnhancedOpMode extends LinearOpMode implements TaskParent
 
     private void updateBatteryCoefficient(double minVolts, double maxVolts)
     {
-        /*
         // Slightly changes OpMode progression.
-        String voltageCheck = FtcEventLoopHandler.latestBatterySend;
+        String voltageCheck = FtcEventLoopHandlerModified.lastBatterySend;
         double batteryCoefficient = 0.5; // between 1 (14.1V) and 0 (12.2V).
         if (!voltageCheck.equals("")) // something weird happened?
         {
@@ -67,11 +70,9 @@ public abstract class EnhancedOpMode extends LinearOpMode implements TaskParent
         }
 
         this.batteryCoefficient = batteryCoefficient;
-        */
 
-        // TODO fix above
 
-        this.batteryCoefficient = .5;
+//        this.batteryCoefficient = .5;
     }
     protected double batteryCoefficient = 0;
 

@@ -97,7 +97,7 @@ public class AndroidGyro implements Gyro
     // Initialize all of the hardware variables
     public AndroidGyro()
     {
-        sensorManager = (SensorManager) HankuBaseActivity.instance.getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) FtcRobotControllerActivity.instance.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         instance = this;

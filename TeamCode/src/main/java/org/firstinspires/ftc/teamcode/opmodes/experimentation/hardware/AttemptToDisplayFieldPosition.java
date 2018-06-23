@@ -39,10 +39,10 @@ public class AttemptToDisplayFieldPosition extends EnhancedOpMode
             Angle offset = new DegreeAngle(Math.random() * 360);
 
             // one tile
-            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24, 24), offset), "#FFFF");
-            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(120, 24), offset), "#3F51B5");
-            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(120, 96), offset), "#3F51B5");
-            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24, 96), offset), "#3F51B5");
+            drawRobotAtPose(new Pose(new CartesianVector(24, 24), offset), "#FFFF");
+            drawRobotAtPose(new Pose(new CartesianVector(120, 24), offset), "#3F51B5");
+            drawRobotAtPose(new Pose(new CartesianVector(120, 96), offset), "#3F51B5");
+            drawRobotAtPose(new Pose(new CartesianVector(24, 96), offset), "#3F51B5");
         }
     }
 }

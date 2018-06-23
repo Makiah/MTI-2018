@@ -79,11 +79,7 @@ public class DrawingUtil {
 
     public static Pose adjustFieldPoseToDashboardDimensions(Pose pose)
     {
-        // top left is 50, 50
-        if (pose.poseType == Pose.PoseType.RELATIVE)
-            return null;
-
-        return new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(-(pose.position.x() - 50) * (50.0/144.0), -(pose.position.x() - 50) * (50.0/144.0)), pose.heading.opposing());
+        return new Pose(new CartesianVector(-(pose.position.x() - 50) * (50.0/144.0), -(pose.position.x() - 50) * (50.0/144.0)), pose.heading.opposing());
     }
 
     public static void drawMecanumRobot(Canvas canvas, Pose robotPose) {

@@ -23,7 +23,7 @@ public class NoDSFoundDaemon extends ParallelTask
 
     public NoDSFoundDaemon(Activity toRestart)
     {
-        super(HankuBaseActivity.instance, "No DS Restart Daemon");
+        super(FtcRobotControllerActivity.instance, "No DS Restart Daemon");
         this.toRestart = toRestart;
         this.START = System.currentTimeMillis();
         this.run();

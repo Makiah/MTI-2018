@@ -9,7 +9,7 @@ import hankutanku.hardware.OpenRevDcMotorImplEx;
 @Config
 public class Harvester
 {
-    public static double currentDrawToTriggerRotation = 1600;
+    public static double currentDrawToTriggerRotation = 1100;
     public static double fixLengthMS = 400;
 
     private final OpenRevDcMotorImplEx leftHarvest, rightHarvest;

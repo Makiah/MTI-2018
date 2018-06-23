@@ -1,20 +1,17 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import com.acmerobotics.dashboard.RobotDashboard;
-import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.teamcode.opmodes.CompetitionProgram;
 import org.firstinspires.ftc.teamcode.robot.Robot;
-import org.firstinspires.ftc.teamcode.robot.hardware.PoseTrackingEncoderWheelSystem;
 import org.firstinspires.ftc.teamcode.robot.structs.Pose;
 import org.firstinspires.ftc.teamcode.vision.relicrecoveryvisionpipelines.JewelDetector2;
 
 import dude.makiah.androidlib.logging.LoggingBase;
 import dude.makiah.androidlib.logging.ProcessConsole;
-import dude.makiah.androidlib.threading.Flow;
 import dude.makiah.androidlib.threading.TimeMeasure;
 import hankutanku.EnhancedOpMode;
 import hankutanku.math.angle.Angle;
@@ -76,14 +73,14 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
         Vector balancePlateOffset = new CartesianVector(24, 24); // starts at blue bottom
         Angle balancePlateHeading = new DegreeAngle(0);
         if (getBalancePlate() == BalancePlate.TOP)
-            balancePlateOffset.add(new CartesianVector(0, 72));
+            balancePlateOffset = balancePlateOffset.add(new CartesianVector(0, 72));
         if (getAlliance() == Alliance.RED)
         {
-            balancePlateOffset.add(new CartesianVector(96, 0));
+            balancePlateOffset = balancePlateOffset.add(new CartesianVector(96, 0));
             balancePlateHeading = new DegreeAngle(180);
         }
         log.lines("Starting position is " + balancePlateOffset.toString(false));
-        robot.ptews.provideExternalPoseInformation(new Pose(balancePlateOffset, balancePlateHeading)); // untracked distance.
+        robot.ptews.setCurrentPose(new Pose(balancePlateOffset, balancePlateHeading)); // untracked distance.
 
         // region Initialization Detection of the Crypto Key and Jewel Alignment
 
@@ -241,7 +238,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
         // Set the positioning system's offset
         robot.ptews.reset();
-        robot.ptews.provideExternalPoseInformation(new Pose(balancePlateOffset.add(new CartesianVector(0, 22)), balancePlateHeading)); // untracked distance.
+        robot.ptews.setCurrentPose(new Pose(balancePlateOffset.add(new CartesianVector(0, 22)), balancePlateHeading)); // untracked distance.
         robot.ptews.update();
 
         // Actually take care of auto.
@@ -260,9 +257,12 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
                 break;
         }
 
-        // Get ALL THE GLYPHS
-        while (true)
-            dump(cryptobox.getOptimalDumpLocation(), harvestGlyphs());
+        if (getBalancePlate() == BalancePlate.BOTTOM)
+        {
+            // Get ALL THE GLYPHS
+            while (true)
+                dump(cryptobox.getOptimalDumpLocation(), harvestGlyphs());
+        }
     }
 
     /**
@@ -289,11 +289,27 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
         robot.drivetrain.stop();
     }
     /**
-     * Overload of above
+     * Overload of above.
      */
     public void driveTime(Vector driveVector, double turnSpeed, TimeMeasure driveTime) throws InterruptedException
     {
         driveTime(driveVector, turnSpeed, driveTime, true);
+    }
+
+    public void turnToHeading(Angle heading, double acceptableDifferenceDegrees, TimeMeasure timeout) throws InterruptedException
+    {
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < timeout.durationIn(TimeMeasure.Units.MILLISECONDS))
+        {
+            robot.drivetrain.move(null, -1 * Range.clip(robot.ptews.getCurrentPose().heading.quickestDegreeMovementTo(heading) / 20, -AutonomousSettings.maxTurnSpeed, AutonomousSettings.maxTurnSpeed));
+            robot.ptews.update();
+
+            if (Math.abs(robot.ptews.getCurrentPose().heading.quickestDegreeMovementTo(heading)) < acceptableDifferenceDegrees)
+                break;
+
+            flow.yield();
+        }
+        robot.drivetrain.stop();
     }
 
     /**
@@ -304,8 +320,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
      * @param timeoutLength  The maximum angle from the target pose which enables the robot to stop this code block.
      * @param completionBasedFunction  A function which returns void and receives a 0-1 input representing how close we are from execution completion.
      */
-    public void matchPose(String movementName,
-                          Pose desiredPose,
+    public void matchPose(Pose desiredPose,
                           double minimumInchesFromTarget,
                           Angle minimumHeadingFromTarget,
                           TimeMeasure timeoutLength,
@@ -342,16 +357,17 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
             double headingDegreeOffsetFromTarget = desiredPose.heading.quickestDegreeMovementTo(currentPose.heading);
             if (positionalOffsetFromTarget.magnitude() <= minimumInchesFromTarget && Math.abs(headingDegreeOffsetFromTarget) <= minimumHeadingFromTarget.degrees())
             {
-                LoggingBase.instance.lines("Quit" + movementName + " because position offset is " + positionalOffsetFromTarget.toString(false) + " and heading offset is " + headingDegreeOffsetFromTarget);
+                LoggingBase.instance.lines("Quit movement because position offset is " + positionalOffsetFromTarget.toString(false) + " and heading offset is " + headingDegreeOffsetFromTarget);
                 break;
             }
 
-            robot.drivetrain.move(positionalOffsetFromTarget.rotateBy(currentPose.heading.negative()).divide(20), headingDegreeOffsetFromTarget / 20);
+            Vector move = positionalOffsetFromTarget.rotateBy(currentPose.heading.negative()).divide(20);
+            robot.drivetrain.move(new PolarVector(Range.clip(move.magnitude(), -AutonomousSettings.maxMoveSpeed, AutonomousSettings.maxMoveSpeed), move.angle()), Range.clip(headingDegreeOffsetFromTarget / 20, -AutonomousSettings.maxTurnSpeed, AutonomousSettings.maxTurnSpeed));
 
             if (previousPositionalOffset != null)
             {
                 Vector movedSinceLastLoop = positionalOffsetFromTarget.subtract(previousPositionalOffset);
-//                movementPowerUpFactor += (.1 - (movedSinceLastLoop.magnitude() / previousPositionalOffset.magnitude())) * .5; // should have moved 10 percent more of the way toward our target destination.
+                movementPowerUpFactor += (.1 - (movedSinceLastLoop.magnitude() / previousPositionalOffset.magnitude())) * .5; // should have moved 10 percent more of the way toward our target destination.
             }
             previousPositionalOffset = positionalOffsetFromTarget;
 
@@ -366,7 +382,6 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
                 completionBasedFunction.value((1.0 - positionalOffsetFromTarget.magnitude()) / originalTargetOffset);
 
             console.write(
-                    movementName,
                     "Target pose is " + desiredPose.toString(),
                     "Positional offset is " + positionalOffsetFromTarget.toString(false),
                     "Heading offset is " + Vector.decimalFormat.format(headingDegreeOffsetFromTarget),
@@ -389,8 +404,7 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
     private int harvestGlyphs() throws InterruptedException
     {
         matchPose(
-                "Head toward pile",
-                new Pose(new CartesianVector(24, 62), getAlliance() == Alliance.BLUE ? new DegreeAngle(270) : new DegreeAngle(90)),
+                new Pose(new CartesianVector(getAlliance() == Alliance.BLUE ? 32 : 112, 62), getAlliance() == Alliance.BLUE ? new DegreeAngle(270) : new DegreeAngle(90)),
                 3,
                 new DegreeAngle(4),
                 new TimeMeasure(TimeMeasure.Units.SECONDS, 4),
@@ -400,8 +414,14 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
         int glyphsGrabbed = 0;
 
         robot.drivetrain.move(new CartesianVector(0, AutonomousSettings.harvestMoveForwardSpeed), 0);
-        while (robot.ptews.getCurrentPose().position.x() < 56 && glyphsGrabbed < 2)
+        boolean notOnOpposingAlliance = true;
+        while (notOnOpposingAlliance && glyphsGrabbed < 2)
         {
+            if (getAlliance() == Alliance.BLUE)
+                notOnOpposingAlliance = robot.ptews.getCurrentPose().position.x() < 56;
+            else
+                notOnOpposingAlliance = robot.ptews.getCurrentPose().position.x() > 72;
+
             robot.ptews.update();
             robot.harvester.update();
 
@@ -430,6 +450,13 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
         robot.drivetrain.stop();
         robot.harvester.run(0);
+
+        matchPose(
+                new Pose(new CartesianVector(getAlliance() == Alliance.BLUE ? 24 : 120, 62), getAlliance() == Alliance.BLUE ? new DegreeAngle(270) : new DegreeAngle(90)),
+                3,
+                new DegreeAngle(4),
+                new TimeMeasure(TimeMeasure.Units.SECONDS, 4),
+                null);
 
         return glyphsGrabbed;
     }
@@ -491,7 +518,6 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
 
             // Drive to some offset in front of the cryptobox deposit location.
             matchPose(
-                    "In Front of Column",
                     new Pose(absoluteDepositLocation.add(vectorOffsetFromColumnAngleOffset), absoluteDepositAngle),
                     5,
                     new DegreeAngle(3),
@@ -541,16 +567,12 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
         }
         else
         {
-            Angle depositOffset = getAlliance() == Alliance.BLUE ? new DegreeAngle(-35) : new DegreeAngle(35);
-            Pose p = new Pose((getAlliance() == Alliance.RED ? new CartesianVector(120, 96) : new CartesianVector(24, 96)).add(new CartesianVector(0, 3)), new DegreeAngle(180).add(depositOffset));
+            Pose p = new Pose((getAlliance() == Alliance.RED ? new CartesianVector(120, 96) : new CartesianVector(24, 96)).add(new CartesianVector(0, 28)), new DegreeAngle(getAlliance() == Alliance.BLUE ? 90 : -90));
 
-            matchPose(
-                    "Get ready to drive to column",
-                    p,
-                    2,
-                    new DegreeAngle(5),
-                    new TimeMeasure(TimeMeasure.Units.SECONDS, 5),
-                    null);
+            turnToHeading(
+                    p.heading,
+                    10,
+                    new TimeMeasure(TimeMeasure.Units.SECONDS, 4));
 
             int allianceXMultiplier = getAlliance() == Alliance.BLUE ? 1 : -1;
             switch (col)
@@ -567,29 +589,22 @@ public abstract class Autonomous extends EnhancedOpMode implements CompetitionPr
             }
 
             matchPose(
-                    "Prepare to deposit glyph",
                     p,
                     2,
                     new DegreeAngle(5),
                     new TimeMeasure(TimeMeasure.Units.SECONDS, 5),
                     null);
 
-            // Flip up
-            robot.flipper.attemptFlipperStateIncrement();
-            while (robot.flipper.isMidStateTransition())
-                robot.flipper.updateFlipperState();
+            Angle depositOffset = getAlliance() == Alliance.BLUE ? new DegreeAngle(180 - AutonomousSettings.depositAngleOffset) : new DegreeAngle(180 + AutonomousSettings.depositAngleOffset);
+            turnToHeading((depositOffset), 5, new TimeMeasure(TimeMeasure.Units.SECONDS, 3));
 
             // Flip out
             robot.flipper.attemptFlipperStateIncrement();
             while (robot.flipper.isMidStateTransition())
                 robot.flipper.updateFlipperState();
 
-            driveTime(new CartesianVector(getAlliance() == Alliance.BLUE ? .1 : -.1, -.3), getAlliance() == Alliance.BLUE ? .2 : -.2, new TimeMeasure(TimeMeasure.Units.SECONDS, 3));
-
-            // Flip out
-            robot.flipper.attemptFlipperStateIncrement();
-            while (robot.flipper.isMidStateTransition())
-                robot.flipper.updateFlipperState();
+            driveTime(new CartesianVector(getAlliance() == Alliance.BLUE ? .3 : -.3, 0), getAlliance() == Alliance.BLUE ? -.3 : .3, new TimeMeasure(TimeMeasure.Units.SECONDS, 1));
+            driveTime(new CartesianVector(0, .1), getAlliance() == Alliance.BLUE ? -.3 : .3, new TimeMeasure(TimeMeasure.Units.SECONDS, 1));
         }
     }
 }

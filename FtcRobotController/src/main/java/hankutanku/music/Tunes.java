@@ -6,6 +6,8 @@ import android.media.MediaPlayer;
 
 import com.qualcomm.ftcrobotcontroller.R;
 
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
+
 import dude.makiah.androidlib.logging.LoggingBase;
 
 import dude.makiah.androidlib.threading.TimeMeasure;
@@ -54,7 +56,7 @@ public class Tunes
                 changedVol = true;
 
                 AudioManager am =
-                        (AudioManager) HankuBaseActivity.instance.getSystemService(Context.AUDIO_SERVICE);
+                        (AudioManager) FtcRobotControllerActivity.instance.getSystemService(Context.AUDIO_SERVICE);
 
                 previousVol = am.getStreamVolume(AudioManager.STREAM_MUSIC);
 
@@ -75,7 +77,7 @@ public class Tunes
                     if (forceVolumeMax)
                     {
                         AudioManager am =
-                                (AudioManager) HankuBaseActivity.instance.getSystemService(Context.AUDIO_SERVICE);
+                                (AudioManager) FtcRobotControllerActivity.instance.getSystemService(Context.AUDIO_SERVICE);
 
                         am.setStreamVolume(
                                 AudioManager.STREAM_MUSIC,
@@ -119,7 +121,7 @@ public class Tunes
                     if (changedVol)
                     {
                         AudioManager am =
-                                (AudioManager) HankuBaseActivity.instance.getSystemService(Context.AUDIO_SERVICE);
+                                (AudioManager) FtcRobotControllerActivity.instance.getSystemService(Context.AUDIO_SERVICE);
 
                         am.setStreamVolume(
                                 AudioManager.STREAM_MUSIC,

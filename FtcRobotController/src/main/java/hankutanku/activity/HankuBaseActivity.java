@@ -17,7 +17,7 @@ import hankutanku.vision.vuforia.VuforiaCam;
  */
 public abstract class HankuBaseActivity extends Activity implements TaskParent
 {
-    public static HankuBaseActivity instance;
+//    public static HankuBaseActivity instance;
     public static boolean NO_DASHBOARD = false;
 
     @Override
@@ -25,7 +25,6 @@ public abstract class HankuBaseActivity extends Activity implements TaskParent
     {
         super.onCreate(savedInstanceState);
 
-        instance = this;
         OpenCVCam.instance = null;
         VuforiaCam.instance = null;
         AndroidGyro.instance = null;

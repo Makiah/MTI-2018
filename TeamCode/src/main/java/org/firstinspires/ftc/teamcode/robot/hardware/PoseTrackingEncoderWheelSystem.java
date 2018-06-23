@@ -17,8 +17,10 @@ import hankutanku.math.vector.Vector;
 
 public class PoseTrackingEncoderWheelSystem
 {
+    public static PoseTrackingEncoderWheelSystem instance;
+
     private final IncrementalAbsoluteEncoder leftWheel, centerWheel, rightWheel; // These COULD be incremental, but we'd just be recalculating stuff.
-    private Pose currentPose = new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(0, 0), new DegreeAngle(0)); // Reference changes over time.
+    private Pose currentPose = new Pose(new CartesianVector(0, 0), new DegreeAngle(0)); // Reference changes over time.
 
     private double leftWheelCumulativePrevious = Double.NaN, centerWheelCumulativePrevious = Double.NaN, rightWheelCumulativePrevious = Double.NaN;
 
@@ -35,6 +37,8 @@ public class PoseTrackingEncoderWheelSystem
         this.rightWheel = new IncrementalAbsoluteEncoder(rightWheel);
 
         console = LoggingBase.instance.newProcessConsole("PTEWS");
+
+        instance = this;
     }
 
     public void reset()
@@ -47,19 +51,12 @@ public class PoseTrackingEncoderWheelSystem
         centerWheel.resetEncoderWheel();
         rightWheel.resetEncoderWheel();
 
-        this.currentPose = new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(0, 0), new DegreeAngle(0));
+        this.currentPose = new Pose(new CartesianVector(0, 0), new DegreeAngle(0));
     }
 
-    public void provideExternalPoseInformation(Pose info)
+    public void setCurrentPose(Pose pose)
     {
-        if (info.poseType == Pose.PoseType.ABSOLUTE)
-        {
-            this.currentPose = info;
-        }
-        else
-        {
-            this.currentPose.add(info);
-        }
+        this.currentPose = pose;
     }
 
     private void redrawRobotForDashboard()
@@ -103,7 +100,7 @@ public class PoseTrackingEncoderWheelSystem
             Angle deltaAngle = new DegreeAngle((rightWheelDelta - leftWheelDelta) / robotSpinCircumference * 180.0);
 
             // Update current pose.
-            this.currentPose = new Pose(Pose.PoseType.ABSOLUTE, currentPose.position.add(positionDelta), currentPose.heading.add(deltaAngle));
+            this.currentPose = new Pose(currentPose.position.add(positionDelta), currentPose.heading.add(deltaAngle));
 
             console.write("Current pose is " + currentPose.toString());
         }

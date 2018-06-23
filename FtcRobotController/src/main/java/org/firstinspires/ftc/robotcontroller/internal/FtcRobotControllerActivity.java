@@ -66,6 +66,7 @@ import com.qualcomm.ftccommon.AboutActivity;
 import com.qualcomm.ftccommon.ClassManagerFactory;
 import com.qualcomm.ftccommon.FtcEventLoop;
 import com.qualcomm.ftccommon.FtcEventLoopIdle;
+import com.qualcomm.ftccommon.FtcEventLoopModified;
 import com.qualcomm.ftccommon.FtcRobotControllerService;
 import com.qualcomm.ftccommon.FtcRobotControllerService.FtcRobotControllerBinder;
 import com.qualcomm.ftccommon.FtcRobotControllerSettingsActivity;
@@ -118,6 +119,8 @@ import hankutanku.activity.HankuBaseActivity;
 @SuppressWarnings("WeakerAccess")
 public class FtcRobotControllerActivity extends HankuBaseActivity
   {
+    public static FtcRobotControllerActivity instance;
+
   public static final String TAG = "RCActivity";
   public String getTag() { return TAG; }
 
@@ -154,8 +157,13 @@ public class FtcRobotControllerActivity extends HankuBaseActivity
   protected FtcRobotControllerService controllerService;
   protected NetworkType networkType;
 
-  protected FtcEventLoop eventLoop;
-  protected Queue<UsbDevice> receivedUsbAttachmentNotifications;
+  protected FtcEventLoopModified eventLoop;
+
+    public FtcEventLoopModified getEventLoop() {
+      return eventLoop;
+    }
+
+    protected Queue<UsbDevice> receivedUsbAttachmentNotifications;
 
   protected class RobotRestarter implements Restarter {
 
@@ -308,6 +316,8 @@ public class FtcRobotControllerActivity extends HankuBaseActivity
     ServiceController.startService(FtcRobotControllerWatchdogService.class);
     bindToService();
     logPackageVersions();
+
+    instance = this;
   }
 
   protected UpdateUI createUpdateUI() {
@@ -387,6 +397,8 @@ public class FtcRobotControllerActivity extends HankuBaseActivity
 
     preferencesHelper.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener);
     RobotLog.cancelWriteLogcatToDisk();
+
+    instance = null;
   }
 
   protected void bindToService() {
@@ -578,7 +590,7 @@ public class FtcRobotControllerActivity extends HankuBaseActivity
     factory = hardwareFactory;
 
     OpModeRegister userOpModeRegister = createOpModeRegister();
-    eventLoop = new FtcEventLoop(factory, userOpModeRegister, callback, this, null); //programmingModeController);
+    eventLoop = new FtcEventLoopModified(factory, userOpModeRegister, callback, this, null); //programmingModeController);
     FtcEventLoopIdle idleLoop = new FtcEventLoopIdle(factory, userOpModeRegister, callback, this, null); //programmingModeController);
 
     controllerService.setCallback(callback);

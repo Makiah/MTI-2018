@@ -39,7 +39,7 @@ public class AttemptToDisplayFieldPosition2 extends EnhancedOpMode
             double x = (1.0 * System.currentTimeMillis() - start) / time;
 
             // one tile
-            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24, 24 + x * 24), new DegreeAngle(0)), "#FFFF");
+            drawRobotAtPose(new Pose(new CartesianVector(24, 24 + x * 24), new DegreeAngle(0)), "#FFFF");
 
             flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 20));
         }
@@ -51,7 +51,7 @@ public class AttemptToDisplayFieldPosition2 extends EnhancedOpMode
             double x = (1.0 * System.currentTimeMillis() - start) / time;
 
             // one tile
-            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(24 + x * 2, 48 + x * 18), new DegreeAngle(-90 * x)), "#FFFF");
+            drawRobotAtPose(new Pose(new CartesianVector(24 + x * 2, 48 + x * 18), new DegreeAngle(-90 * x)), "#FFFF");
 
             flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 20));
         }
@@ -63,7 +63,7 @@ public class AttemptToDisplayFieldPosition2 extends EnhancedOpMode
             double x = (1.0 * System.currentTimeMillis() - start) / time;
 
             // one tile
-            drawRobotAtPose(new Pose(Pose.PoseType.ABSOLUTE, new CartesianVector(26 + x * -8, 66), new DegreeAngle(-90)), "#FFFF");
+            drawRobotAtPose(new Pose(new CartesianVector(26 + x * -8, 66), new DegreeAngle(-90)), "#FFFF");
 
             flow.pause(new TimeMeasure(TimeMeasure.Units.MILLISECONDS, 20));
         }
