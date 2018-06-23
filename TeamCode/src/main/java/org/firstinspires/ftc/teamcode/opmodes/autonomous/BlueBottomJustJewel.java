@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-import com.acmerobotics.dashboard.config.Config;
-
 import org.firstinspires.ftc.teamcode.OpModeDisplayGroups;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Blue Bottom", group= OpModeDisplayGroups.FINAL_BOT_OPMODES)
-public class BlueBottom extends Autonomous
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Blue Bottom - Just Jewel", group= OpModeDisplayGroups.FINAL_BOT_OPMODES)
+public class BlueBottomJustJewel extends Autonomous
 {
     @Override
     public Alliance getAlliance() {
@@ -19,6 +17,6 @@ public class BlueBottom extends Autonomous
 
     @Override
     protected boolean dontRunAuto() {
-        return false;
+        return true;
     }
 }

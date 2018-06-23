@@ -56,6 +56,31 @@ public class TelemetryWrapper extends LoggingBase
             //Refresh the console with this new data.
             mainTelemetry.update ();
         }
+
+        StringBuilder logMessage = new StringBuilder();
+        if (mainTelemetry != null)
+        {
+            //Add all private console data.
+            for (ProcessConsole pConsole : privateProcessConsoles)
+            {
+                logMessage.append("----- ").append(pConsole.processName).append(" -----\n");
+
+                for (String line : pConsole.processData)
+                    logMessage.append (line + "\n");
+
+                logMessage.append("\n");
+            }
+
+            logMessage.append ("----- Sequential Data -----");
+            for (String line : sequentialConsoleData)
+            {
+                logMessage.append (line);
+            }
+
+            //Refresh the console with this new data.
+            mainTelemetry.update ();
+        }
+
         //Otherwise it just gets queued in the ArrayList.
     }
 }

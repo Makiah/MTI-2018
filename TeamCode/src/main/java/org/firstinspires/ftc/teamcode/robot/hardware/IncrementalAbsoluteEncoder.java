@@ -41,35 +41,29 @@ public class IncrementalAbsoluteEncoder
             double projectedDegreeChangeFromLastLoop = currentAngularVelocity * deltaSeconds;
             Angle expectedHeading = previousEncoderAngle.add(new DegreeAngle(projectedDegreeChangeFromLastLoop));
 
-            double deltaDegrees = 0.0;
-
-            double bestRouteSuggestedByVelocity = expectedHeading.quickestDegreeMovementTo(currentHeading);
             double bestRouteSuggestedByHeading = previousEncoderAngle.quickestDegreeMovementTo(currentHeading);
+            double bestRouteSuggestedByVelocity = expectedHeading.quickestDegreeMovementTo(currentHeading);
 
+            if (Math.abs(bestRouteSuggestedByHeading) > 90)
+            {
+                LoggingBase.instance.lines(Vector.decimalFormat.format(previousEncoderAngle.degrees()) + " => " + Vector.decimalFormat.format(currentHeading.degrees()) + " = " + Vector.decimalFormat.format(bestRouteSuggestedByHeading) + ", prediction was " + expectedHeading.degrees());
+            }
+
+            double deltaDegrees = 0.0;
             if (!angleBetween(currentHeading, previousEncoderAngle, expectedHeading) && Math.signum(bestRouteSuggestedByVelocity) != Math.signum(bestRouteSuggestedByHeading) && Math.abs(bestRouteSuggestedByVelocity) < Math.abs(bestRouteSuggestedByHeading)) // means that we're slowing down
             {
-                System.out.println("Better off following the route suggested by current velocity");
                 deltaDegrees = 360 - bestRouteSuggestedByHeading;
+                LoggingBase.instance.lines(Vector.decimalFormat.format(previousEncoderAngle.degrees()) + " => " + Vector.decimalFormat.format(currentHeading.degrees()) + " = " + Vector.decimalFormat.format(bestRouteSuggestedByHeading) + ", prediction was " + expectedHeading.degrees());
             }
-            else
-            {
-                System.out.println("Better off following the route suggested by current heading");
+            else {
                 deltaDegrees = bestRouteSuggestedByHeading;
             }
 
-            double previousAngularVelocity = currentAngularVelocity;
-
             currentAngularVelocity = deltaDegrees / deltaSeconds;
-
-            if (Math.abs(currentAngularVelocity) > 90)
-            {
-                LoggingBase.instance.lines("FUCK. Ok, so dt = " + Vector.decimalFormat.format(deltaSeconds) + " velocity was " + Vector.decimalFormat.format(previousAngularVelocity) + " so expected heading was " + Vector.decimalFormat.format(expectedHeading.degrees()) + " p encoder " + Vector.decimalFormat.format(previousEncoderAngle.degrees()) + " now encoder " + Vector.decimalFormat.format(currentHeading.degrees()) + " da = " + Vector.decimalFormat.format(deltaDegrees) + " which made velocity " + Vector.decimalFormat.format(currentAngularVelocity));
-            }
-
             totalDegreeOffset += deltaDegrees;
         }
 
-        lastTimeCheck = System.currentTimeMillis();
+        lastTimeCheck = currentTime;
         previousEncoderAngle = currentHeading;
     }
 

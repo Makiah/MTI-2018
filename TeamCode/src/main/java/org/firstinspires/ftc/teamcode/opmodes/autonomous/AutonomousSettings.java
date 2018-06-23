@@ -10,7 +10,10 @@ public class AutonomousSettings
 {
     public static double depositAngleOffset = 25;
     public static double harvestPower = .7;
-    public static double harvestMoveForwardSpeed = .3;
+    public static double harvestMoveForwardSpeed = .5;
     public static double maxTurnSpeed = .6;
     public static double maxMoveSpeed = .7;
+    public static double leftDrive = 52;
+    public static double centerDrive = 60;
+    public static double rightDrive = 68;
 }

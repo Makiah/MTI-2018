@@ -34,6 +34,7 @@ public class AttemptToDisplayFieldPosition2 extends EnhancedOpMode
     {
         long start = System.currentTimeMillis();
         long time = 2000;
+
         while (System.currentTimeMillis() - start < time)
         {
             double x = (1.0 * System.currentTimeMillis() - start) / time;

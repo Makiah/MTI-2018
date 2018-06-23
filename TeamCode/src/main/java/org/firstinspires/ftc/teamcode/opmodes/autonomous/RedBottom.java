@@ -14,4 +14,9 @@ public class RedBottom extends Autonomous
     public BalancePlate getBalancePlate() {
         return BalancePlate.BOTTOM;
     }
+
+    @Override
+    protected boolean dontRunAuto() {
+        return false;
+    }
 }

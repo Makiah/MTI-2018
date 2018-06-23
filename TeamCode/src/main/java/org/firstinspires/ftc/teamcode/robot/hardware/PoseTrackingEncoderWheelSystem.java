@@ -41,6 +41,23 @@ public class PoseTrackingEncoderWheelSystem
         instance = this;
     }
 
+    private Pose desiredPose;
+
+    public void setDesiredPose(Pose pose)
+    {
+        this.desiredPose = pose;
+    }
+
+    public void addToDesiredPose(Pose pose)
+    {
+        this.desiredPose = this.desiredPose.add(pose);
+    }
+
+    public Pose getPoseToDesired()
+    {
+        return this.desiredPose.subtract(getCurrentPose());
+    }
+
     public void reset()
     {
         leftWheelCumulativePrevious = Double.NaN;
@@ -64,13 +81,15 @@ public class PoseTrackingEncoderWheelSystem
         if (RobotDashboard.getInstance() == null)
             return;
 
-        LoggingBase.instance.lines("Drew Robot");
+//        LoggingBase.instance.lines("Drew Robot");
 
         TelemetryPacket tPacket = new TelemetryPacket();
         Canvas fieldOverlay = tPacket.fieldOverlay();
 
         fieldOverlay.setStroke("#3F51B5");
         DrawingUtil.drawMecanumRobot(fieldOverlay, getCurrentPose());
+        fieldOverlay.setStroke("#3F51B5");
+        DrawingUtil.drawMecanumRobot(fieldOverlay, desiredPose);
 
         RobotDashboard.getInstance().sendTelemetryPacket(tPacket);
     }

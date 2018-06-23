@@ -14,4 +14,9 @@ public class BlueTop extends Autonomous
     public BalancePlate getBalancePlate() {
         return BalancePlate.TOP;
     }
+
+    @Override
+    protected boolean dontRunAuto() {
+        return false;
+    }
 }

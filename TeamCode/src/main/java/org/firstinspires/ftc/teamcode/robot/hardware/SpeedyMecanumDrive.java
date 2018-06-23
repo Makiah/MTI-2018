@@ -69,6 +69,10 @@ public class SpeedyMecanumDrive
             for (int i = 0; i < driveMotors.length; i++)
                 drivePowers[i] += Math.cos(driveVector.angle().subtract(WHEEL_ORIENTATIONS[i]).radians());
 
+            // TODO test whether this works
+//            drivePowers[0] *= 1.2;
+//            drivePowers[1] *= 1.2;
+
             // Normalize the vectors to ensure we're moving at max speed allowed by the drive vector.
             // For example, traveling forward with classical code results in .7 on each motor, this ensures that we actually move at 1 power (max speed).
             double largestDrivePower = 0;

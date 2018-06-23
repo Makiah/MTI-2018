@@ -23,10 +23,10 @@ public class Teleop extends EnhancedOpMode
     {
         Robot robot = new Robot(hardware, AutoOrTeleop.TELEOP, flow);
 
+        robot.relic.setRotatorPosition(false);
+
         while (!isStarted())
             flow.yield();
-
-        robot.relic.setRotatorPosition(true);
 
         boolean inRelicMode = false;
 

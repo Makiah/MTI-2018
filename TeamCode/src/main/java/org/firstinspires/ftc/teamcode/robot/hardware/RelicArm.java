@@ -10,7 +10,7 @@ public class RelicArm
     private final DcMotor extender;
     private final Servo rotator, grabber;
 
-    public static double rotatorUp = .361;
+    public static double rotatorUp = .331;
     public static double rotatorDown = .832;
     public static double grabberGrab = .713;
     public static double grabberRelease = 0;
