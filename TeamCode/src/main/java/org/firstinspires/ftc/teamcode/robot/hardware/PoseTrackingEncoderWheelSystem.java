@@ -53,9 +53,9 @@ public class PoseTrackingEncoderWheelSystem
         this.desiredPose = this.desiredPose.add(pose);
     }
 
-    public Pose getPoseToDesired()
+    public Pose getDesiredPose()
     {
-        return this.desiredPose.subtract(getCurrentPose());
+        return desiredPose;
     }
 
     public void reset()

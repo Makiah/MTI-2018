@@ -16,7 +16,7 @@ public class RedTopJustJewel extends Autonomous
     }
 
     @Override
-    protected boolean dontRunAuto() {
+    protected boolean dontAttemptGlyphs() {
         return true;
     }
 }

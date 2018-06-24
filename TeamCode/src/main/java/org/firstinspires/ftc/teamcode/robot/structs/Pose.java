@@ -26,6 +26,16 @@ public class Pose
         return new Pose(position.add(other.position), heading.add(other.heading));
     }
 
+    public Pose add(Vector position)
+    {
+        return new Pose(this.position.add(position), heading);
+    }
+
+    public Pose add(Angle heading)
+    {
+        return new Pose(position, this.heading.add(heading));
+    }
+
     public Pose subtract(Pose other)
     {
         return new Pose(position.subtract(other.position), heading.subtract(other.heading));

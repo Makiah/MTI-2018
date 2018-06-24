@@ -16,7 +16,7 @@ public class BlueBottomJustJewel extends Autonomous
     }
 
     @Override
-    protected boolean dontRunAuto() {
+    protected boolean dontAttemptGlyphs() {
         return true;
     }
 }

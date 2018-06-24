@@ -1,5 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
+import org.firstinspires.ftc.teamcode.opmodes.CompetitionProgram;
+import org.firstinspires.ftc.teamcode.robot.structs.Pose;
+
+import hankutanku.math.angle.Angle;
+import hankutanku.math.angle.DegreeAngle;
+import hankutanku.math.vector.CartesianVector;
+
 public class Cryptobox
 {
     //left-right
@@ -9,9 +16,63 @@ public class Cryptobox
         LEFT, CENTER, RIGHT
     }
 
-    public Cryptobox()
+    public final Pose[] depositPoses;
+    public final Angle unmodifiedDepositAngle;
+
+    public Cryptobox(CompetitionProgram.Alliance alliance, CompetitionProgram.BalancePlate balancePlate)
     {
         this.glyphs = new boolean[3][4];
+
+        if (alliance == CompetitionProgram.Alliance.BLUE && balancePlate == CompetitionProgram.BalancePlate.BOTTOM)
+        {
+            this.depositPoses = new Pose[]{
+                    new Pose(new CartesianVector(24, 52), new DegreeAngle(270 + AutonomousSettings.depositAngleOffset)),
+                    new Pose(new CartesianVector(24, 60), new DegreeAngle(270 - AutonomousSettings.depositAngleOffset)),
+                    new Pose(new CartesianVector(24, 68), new DegreeAngle(270 - AutonomousSettings.depositAngleOffset)),
+            };
+
+            unmodifiedDepositAngle = new DegreeAngle(270);
+        }
+        else if (alliance == CompetitionProgram.Alliance.BLUE && balancePlate == CompetitionProgram.BalancePlate.TOP)
+        {
+            this.depositPoses = new Pose[]{
+                    new Pose(new CartesianVector(28, 120), new DegreeAngle(180 - AutonomousSettings.depositAngleOffset)),
+                    new Pose(new CartesianVector(36, 120), new DegreeAngle(180 - AutonomousSettings.depositAngleOffset)),
+                    new Pose(new CartesianVector(44, 120), new DegreeAngle(180 - AutonomousSettings.depositAngleOffset)),
+            };
+
+            unmodifiedDepositAngle = new DegreeAngle(180);
+        }
+        else if (alliance == CompetitionProgram.Alliance.RED && balancePlate == CompetitionProgram.BalancePlate.BOTTOM)
+        {
+            this.depositPoses = new Pose[]{
+                    new Pose(new CartesianVector(120, 52), new DegreeAngle(270 + AutonomousSettings.depositAngleOffset)),
+                    new Pose(new CartesianVector(120, 60), new DegreeAngle(270 - AutonomousSettings.depositAngleOffset)),
+                    new Pose(new CartesianVector(120, 68), new DegreeAngle(270 - AutonomousSettings.depositAngleOffset)),
+            };
+
+            unmodifiedDepositAngle = new DegreeAngle(90);
+        }
+        else if (alliance == CompetitionProgram.Alliance.RED && balancePlate == CompetitionProgram.BalancePlate.TOP)
+        {
+            this.depositPoses = new Pose[]{
+                    new Pose(new CartesianVector(100, 120), new DegreeAngle(180 + AutonomousSettings.depositAngleOffset)),
+                    new Pose(new CartesianVector(108, 120), new DegreeAngle(180 + AutonomousSettings.depositAngleOffset)),
+                    new Pose(new CartesianVector(116, 120), new DegreeAngle(180 + AutonomousSettings.depositAngleOffset)),
+            };
+
+            unmodifiedDepositAngle = new DegreeAngle(180);
+        }
+        else
+        {
+            depositPoses = null; // satisfy android studio
+            unmodifiedDepositAngle = null;
+        }
+    }
+
+    public Pose getDepositPoseFor(Column column)
+    {
+        return depositPoses[indexFromCol(column)];
     }
 
     private int indexFromCol(Column column)

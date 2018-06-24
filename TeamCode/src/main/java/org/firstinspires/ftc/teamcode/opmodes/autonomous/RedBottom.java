@@ -16,7 +16,7 @@ public class RedBottom extends Autonomous
     }
 
     @Override
-    protected boolean dontRunAuto() {
+    protected boolean dontAttemptGlyphs() {
         return false;
     }
 }
