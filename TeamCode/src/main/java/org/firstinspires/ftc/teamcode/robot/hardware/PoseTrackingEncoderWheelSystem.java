@@ -81,15 +81,20 @@ public class PoseTrackingEncoderWheelSystem
         if (RobotDashboard.getInstance() == null)
             return;
 
-//        LoggingBase.instance.lines("Drew Robot");
-
         TelemetryPacket tPacket = new TelemetryPacket();
         Canvas fieldOverlay = tPacket.fieldOverlay();
 
-        fieldOverlay.setStroke("#3F51B5");
-        DrawingUtil.drawMecanumRobot(fieldOverlay, getCurrentPose());
-        fieldOverlay.setStroke("#3F51B5");
-        DrawingUtil.drawMecanumRobot(fieldOverlay, desiredPose);
+        if (getCurrentPose() != null)
+        {
+            fieldOverlay.setStroke("#3F51B5");
+            DrawingUtil.drawMecanumRobot(fieldOverlay, getCurrentPose());
+        }
+
+        if (desiredPose != null)
+        {
+            fieldOverlay.setStroke("#3F51B5");
+            DrawingUtil.drawMecanumRobot(fieldOverlay, desiredPose);
+        }
 
         RobotDashboard.getInstance().sendTelemetryPacket(tPacket);
     }

@@ -134,6 +134,7 @@ public abstract class EnhancedOpMode extends LinearOpMode implements TaskParent
         {
             log.lines("UH OH!  An error was just thrown!");
             log.lines(e.getMessage ());
+            log.lines("Class is " + e.getStackTrace()[0].getClassName() + " on line " + e.getStackTrace()[1].getMethodName());
             log.lines("Will end upon tapping stop...");
 
             //Wait until stop is requested.

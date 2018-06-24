@@ -1,5 +1,7 @@
 package hankutanku.logging;
 
+import android.util.Log;
+
 import dude.makiah.androidlib.logging.LoggingBase;
 import dude.makiah.androidlib.logging.ProcessConsole;
 
@@ -72,14 +74,12 @@ public class TelemetryWrapper extends LoggingBase
             }
 
             logMessage.append ("----- Sequential Data -----");
-            for (String line : sequentialConsoleData)
-            {
-                logMessage.append (line);
+            for (String line : sequentialConsoleData) {
+                logMessage.append(line + "\n");
             }
-
-            //Refresh the console with this new data.
-            mainTelemetry.update ();
         }
+
+        Log.e("HankuTelem", logMessage.toString());
 
         //Otherwise it just gets queued in the ArrayList.
     }
